@@ -101,7 +101,7 @@ function memberCardHTML(m, i) {
     </div>
     <div class="a-card__grid a-card__grid--3">
       <label class="a-card__field"><span>ID</span><input data-k="id" value="${esc(m.id||'')}"></label>
-      <label class="a-card__field"><span>No.</span><input data-k="no" value="${esc(m.no||'')}"></label>
+      <label class="a-card__field"><span>No.（並び順で自動）</span><input data-k="no" value="${esc(m.no||'')}" readonly title="▲▼ボタンで並び替えると自動で更新されます"></label>
       <label class="a-card__field"><span>イニシャル</span><input data-k="initial" value="${esc(m.initial||'')}" maxlength="2"></label>
       <label class="a-card__field"><span>担当カラー</span>
         <select data-k="colorVar">${colorOpts}</select>
@@ -289,6 +289,7 @@ function bindListHandlers(key) {
         } else {
           return;
         }
+        if (key === 'members') renumberMembers();
         save();
         renderAll();
         setStatus(`${key} を更新しました`, 'ok');
@@ -396,6 +397,14 @@ function newMember() {
     position:'Vocal', birth:'1月1日', hobby:'', likes:''
   };
 }
+
+// Renumber all members so their "no" matches array position (01, 02, 03, ...)
+function renumberMembers() {
+  if (!state.members) return;
+  state.members.forEach((m, i) => {
+    m.no = String(i + 1).padStart(2, '0');
+  });
+}
 function newNews() {
   const d = new Date();
   const pad = n => String(n).padStart(2,'0');
@@ -412,7 +421,7 @@ function newGallery() {
 function newSns() { return { label:'★ / SNS', url:'#' }; }
 
 function bindAddButtons() {
-  document.getElementById('addMemberBtn').onclick = () => { state.members.push(newMember()); save(); renderMembers(); scrollToLast('membersList'); };
+  document.getElementById('addMemberBtn').onclick = () => { state.members.push(newMember()); renumberMembers(); save(); renderMembers(); scrollToLast('membersList'); };
   document.getElementById('addNewsBtn').onclick = () => { state.news.unshift(newNews()); save(); renderNews(); };
   document.getElementById('addScheduleBtn').onclick = () => { state.schedule.push(newSchedule()); save(); renderSchedule(); scrollToLast('scheduleList'); };
   document.getElementById('addGalleryBtn').onclick = () => { state.gallery.push(newGallery()); save(); renderGallery(); scrollToLast('galleryList'); };
