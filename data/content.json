@@ -102,88 +102,40 @@
   ],
   "news": [
     {
-<<<<<<< HEAD
       "date": "2026.04.29",
       "category": "live",
       "title": "デビューライブ「first light」",
-      "url": "https://tiget.net/events/481155"
-=======
-      "id": "news-20260422-debut-ticket",
-      "date": "2026.04.22",
-      "category": "live",
-      "title": "デビューライブ「enon 1st contact」最終チケット受付開始",
-      "image": "",
-      "body": "enon初のデビューライブ「enon 1st contact」の最終チケット受付を開始いたしました。\n\n日時: 2026年4月29日(水) OPEN 18:30 / START 19:00\n会場: 渋谷 Garret\n料金: ADV ¥3,500 / DOOR ¥4,000（別途1ドリンク）\n\nチケットは公式サイトおよび各プレイガイドにて受付中。ぜひenonの門出にお立ち会いください。"
->>>>>>> 9c5a3c3 (News detail pages: image + body + dedicated detail view)
+      "url": "https://tiget.net/events/481155",
+      "id": "news-20260429",
+      "image": "images/news/1777074043528_enon_flyer.jpeg",
+      "body": "enon\nデビューライブ\n~first light~\n\nチケットURL\nhttps://tiget.net/events/481155\n\nチケット\n○Sチケット\n¥8,000\n・最前優先入場\n・囲み写メ or メンバー全員チェキ\n・Tシャツ\n・前方エリア\n\n○Aチケット\n¥500\n\n■入場順\n整理券順/SPチケット⇒Aチケット⇒当日\n\n【お問い合わせ】\nチケットをお申し込み後のお問い合わせは、チケット番号も合わせて記載して下さい。\n\n【ご来場の皆様へ】\n・お客様ご自身のキャンセル等は受け付けておりません。\n・入場時・特典会時は、間隔を空けて整列をお願いします。\n・貴重品を含む荷物は、各自ご自身の責任で管理をお願いします。盗難や紛失等に関しましては、アーティストおよび所属事務所、またライブハウス、主催者は一切の責任を負いかねますのでご了承ください。\n・当公演は、館内全面禁煙になります。\n\n出演者\nenon\n開催日\n2026年04月29日(水祝)\n主催または登録者\nペチュニア\n会場\nGARRET udagawa(東京都)"
     },
     {
-      "id": "news-20260418-idolwave",
       "date": "2026.04.18",
-<<<<<<< HEAD
       "category": "info",
       "title": "enon debut live「first light」販売開始",
-      "url": "https://tiget.net/events/481155"
+      "url": "https://tiget.net/events/481155",
+      "id": "news-20260418-9r1d",
+      "image": "",
+      "body": ""
     },
     {
       "date": "2026.04.24",
-=======
-      "category": "media",
-      "title": "月刊「IDOL WAVE」5月号にメンバー全員掲載決定",
-      "image": "",
-      "body": "月刊「IDOL WAVE」5月号(4月28日発売)に、enonメンバー5人全員の掲載が決定いたしました。\n\nグループインタビュー、ソロカット、そしてデビューに向けた意気込みを語るロングインタビューを掲載予定です。ぜひ書店にてお買い求めください。"
-    },
-    {
-      "id": "news-20260415-goods",
-      "date": "2026.04.15",
-      "category": "goods",
-      "title": "デビュー記念グッズラインナップ公開 ― メンバーカラーTシャツ・アクスタ 他",
-      "image": "",
-      "body": "デビューを記念したオフィシャルグッズラインナップを公開いたしました。\n\n・メンバーカラーTシャツ(5種): ¥3,800\n・アクリルスタンド(5種): ¥1,500\n・ロゴトート: ¥2,500\n・デビュー記念ステッカーセット: ¥800\n\n4月29日のデビューライブ会場にて先行販売、翌日よりオンラインショップでも販売を開始します。"
-    },
-    {
-      "id": "news-20260410-sns-fc",
-      "date": "2026.04.10",
-      "category": "info",
-      "title": "公式SNS・ファンクラブ運用開始のお知らせ",
-      "image": "",
-      "body": "enon公式X(旧Twitter)の運用を開始いたしました。最新情報・メンバーの日常などを発信していきますので、ぜひフォローをお願いいたします。\n\n公式ファンクラブサイトも順次準備中です。入会特典など、詳細が決まり次第改めてお知らせいたします。"
-    },
-    {
-      "id": "news-20260407-mv",
-      "date": "2026.04.07",
-      "category": "media",
-      "title": "デビュー曲「Encounter」ミュージックビデオをYouTubeにてプレミア公開決定",
-      "image": "",
-      "body": "enonのデビュー曲「Encounter」のミュージックビデオを、デビュー当日4月29日22:00よりYouTubeにてプレミア公開いたします。\n\n監督はアイドルシーンで注目の映像作家・◯◯◯◯氏を起用。5人の出会いと、音楽を通じて紡がれる縁(En)をテーマにした、映像美あふれる1本となっています。"
-    },
-    {
-      "id": "news-20260401-site",
-      "date": "2026.04.01",
->>>>>>> 9c5a3c3 (News detail pages: image + body + dedicated detail view)
       "category": "info",
       "title": "オフィシャルWEBサイトを公開しました",
+      "url": "#",
+      "id": "news-20260424-efko",
       "image": "",
-      "body": "この度、enonオフィシャルWEBサイト(enon-idol.com)を公開いたしました。\n\nメンバー情報・ライブスケジュール・最新のお知らせなど、随時更新してまいります。今後ともenonをよろしくお願いいたします。"
+      "body": ""
     },
     {
-      "id": "news-20260324-launch",
       "date": "2026.03.24",
       "category": "info",
       "title": "新人アイドルグループ「enon」始動のお知らせ",
-<<<<<<< HEAD
-      "url": "#"
-=======
+      "url": "#",
+      "id": "news-20260324-bqvt",
       "image": "",
-      "body": "新人アイドルグループ「enon(エンオン)」の結成を発表いたします。\n\n月詠ほのか / 星江森 / 空乃ふわり / 一ノ瀬ゆな / 千葉凜 の5人で始動し、「On音楽を通じて、出会ったEn縁を大事にする」というコンセプトのもと、2026年4月29日のデビューを目指して活動してまいります。\n\n温かい応援をよろしくお願いいたします。"
-    },
-    {
-      "id": "news-20260320-oneman",
-      "date": "2026.03.20",
-      "category": "live",
-      "title": "6月7日 渋谷WWW Xにて 1st ワンマンライブ「En」開催決定",
-      "image": "",
-      "body": "enon 1st ワンマンライブ「En」の開催が決定いたしました。\n\n日時: 2026年6月7日(日) OPEN 17:00 / START 18:00\n会場: 渋谷 WWW X\n料金: ADV ¥4,800\n\nチケット詳細・受付開始日は追ってご案内いたします。デビューから約1ヶ月後の記念すべきワンマン公演にご期待ください。"
->>>>>>> 9c5a3c3 (News detail pages: image + body + dedicated detail view)
+      "body": ""
     }
   ],
   "schedule": [
