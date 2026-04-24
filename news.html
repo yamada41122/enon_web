@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>News | enon Official</title>
+<meta name="description" content="enon（エノン）からのお知らせ・最新情報一覧。">
+<link rel="icon" type="image/svg+xml" href="images/logo.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html"><img src="images/logo.png" alt="enon" width="2000" height="2000" decoding="async"></a>
+  <nav class="site-nav" id="nav">
+    <a href="index.html">Home</a>
+    <a href="members.html">Members</a>
+    <a href="news.html" class="active">News</a>
+    <a href="schedule.html">Schedule</a>
+  </nav>
+  <button class="menu-toggle" aria-label="menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+</header>
+
+<section class="pagehead">
+  <div class="pagehead__inner">
+    <div class="pagehead__kicker">Information</div>
+    <h1 class="pagehead__title">News<span class="dot">.</span></h1>
+    <p class="pagehead__sub">enonからのお知らせと最新情報を発信しています。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section__inner">
+
+    <div class="filter-row" id="filter">
+      <button class="filter-chip active" data-filter="all">All</button>
+      <button class="filter-chip" data-filter="live">Live</button>
+      <button class="filter-chip" data-filter="media">Media</button>
+      <button class="filter-chip" data-filter="info">Info</button>
+      <button class="filter-chip" data-filter="goods">Goods</button>
+    </div>
+
+    <div class="news-list" id="newslist">
+
+      <a class="news-item" href="#" data-cat="live">
+        <span class="news-item__date">2026.04.22</span>
+        <span class="news-item__tag live">Live</span>
+        <span class="news-item__title">デビューライブ「enon 1st contact」最終チケット受付開始</span>
+        <span class="news-item__arrow">→</span>
+      </a>
+
+      <a class="news-item" href="#" data-cat="media">
+        <span class="news-item__date">2026.04.18</span>
+        <span class="news-item__tag media">Media</span>
+        <span class="news-item__title">月刊「IDOL WAVE」5月号にメンバー全員掲載決定</span>
+        <span class="news-item__arrow">→</span>
+      </a>
+
+      <a class="news-item" href="#" data-cat="goods">
+        <span class="news-item__date">2026.04.15</span>
+        <span class="news-item__tag goods">Goods</span>
+        <span class="news-item__title">デビュー記念グッズラインナップ公開 ― メンバーカラーTシャツ・アクスタ 他</span>
+        <span class="news-item__arrow">→</span>
+      </a>
+
+      <a class="news-item" href="#" data-cat="info">
+        <span class="news-item__date">2026.04.10</span>
+        <span class="news-item__tag info">Info</span>
+        <span class="news-item__title">公式SNS・ファンクラブ運用開始のお知らせ</span>
+        <span class="news-item__arrow">→</span>
+      </a>
+
+      <a class="news-item" href="#" data-cat="media">
+        <span class="news-item__date">2026.04.07</span>
+        <span class="news-item__tag media">Media</span>
+        <span class="news-item__title">デビュー曲「Encounter」ミュージックビデオをYouTubeにてプレミア公開決定</span>
+        <span class="news-item__arrow">→</span>
+      </a>
+
+      <a class="news-item" href="#" data-cat="info">
+        <span class="news-item__date">2026.04.01</span>
+        <span class="news-item__tag info">Info</span>
+        <span class="news-item__title">オフィシャルWEBサイトを公開しました</span>
+        <span class="news-item__arrow">→</span>
+      </a>
+
+      <a class="news-item" href="#" data-cat="info">
+        <span class="news-item__date">2026.03.24</span>
+        <span class="news-item__tag info">Info</span>
+        <span class="news-item__title">新人アイドルグループ「enon」始動のお知らせ</span>
+        <span class="news-item__arrow">→</span>
+      </a>
+
+      <a class="news-item" href="#" data-cat="live">
+        <span class="news-item__date">2026.03.20</span>
+        <span class="news-item__tag live">Live</span>
+        <span class="news-item__title">6月7日 渋谷WWW Xにて 1st ワンマンライブ「En」開催決定</span>
+        <span class="news-item__arrow">→</span>
+      </a>
+
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <img class="site-footer__logo" src="images/logo.png" alt="enon" width="2000" height="2000" loading="lazy" decoding="async">
+    <nav class="site-footer__links">
+      <a href="index.html">Home</a>
+      <a href="members.html">Members</a>
+      <a href="news.html">News</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
+  <div class="site-footer__bottom">
+    <span>© 2026 enon. All Rights Reserved.</span>
+    <span>Debut : 2026.04.29 @ Shibuya Garret</span>
+  </div>
+</footer>
+
+<script>
+  // filter
+  const chips=document.querySelectorAll('#filter .filter-chip');
+  const items=document.querySelectorAll('#newslist .news-item');
+  chips.forEach(c=>c.addEventListener('click',()=>{
+    chips.forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+    const f=c.dataset.filter;
+    items.forEach(i=>{
+      i.style.display=(f==='all'||i.dataset.cat===f)?'':'none';
+    });
+  }));
+  // reveal
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.1});
+  document.querySelectorAll('.news-item').forEach(el=>{el.classList.add('reveal');io.observe(el)});
+</script>
+</body>
+</html>

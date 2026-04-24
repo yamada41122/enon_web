@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet">
+  <style>
+    .logo-letter { fill: #ffffff; }
+    .logo-dot { fill: #000000; }
+  </style>
+  <g>
+    <!-- e -->
+    <path class="logo-letter" d="M90 100
+      a50 50 0 1 0 28 45
+      l-18 -14
+      a28 28 0 1 1 -6 -56
+      a28 28 0 0 1 28 28
+      l-56 0
+      l0 22
+      l78 0
+      l0 -8
+      a50 50 0 0 0 -54 -50 z"/>
+    <circle class="logo-dot" cx="95" cy="108" r="4"/>
+    <circle class="logo-dot" cx="130" cy="150" r="4"/>
+    <!-- n (left) -->
+    <path class="logo-letter" d="M175 150
+      l0 -60
+      a40 40 0 0 1 80 0
+      l0 60
+      l-22 0
+      l0 -58
+      a18 18 0 0 0 -36 0
+      l0 58 z"/>
+    <circle class="logo-dot" cx="248" cy="100" r="4"/>
+    <!-- heart (o) -->
+    <path class="logo-letter" d="M325 70
+      c-18 -18 -48 -6 -48 20
+      c0 22 28 40 48 62
+      c20 -22 48 -40 48 -62
+      c0 -26 -30 -38 -48 -20 z"/>
+    <!-- n (right) -->
+    <path class="logo-letter" d="M410 150
+      l0 -60
+      a40 40 0 0 1 80 0
+      l0 60
+      l-22 0
+      l0 -58
+      a18 18 0 0 0 -36 0
+      l0 58 z"/>
+    <circle class="logo-dot" cx="483" cy="100" r="4"/>
+  </g>
+</svg>
