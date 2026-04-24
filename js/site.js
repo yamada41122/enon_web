@@ -89,9 +89,16 @@ function renderMemberDetails(members, el) {
   `).join('');
 }
 
+function sortNewsByDateDesc(news) {
+  return [...(news || [])].sort((a, b) =>
+    (b.date || '').localeCompare(a.date || '')
+  );
+}
+
 function renderNewsList(news, el, limit) {
   if (!el) return;
-  const items = limit ? news.slice(0, limit) : news;
+  const sorted = sortNewsByDateDesc(news);
+  const items = limit ? sorted.slice(0, limit) : sorted;
   el.innerHTML = items.map(n => {
     const detailUrl = n.id ? `news-detail.html?id=${encodeURIComponent(n.id)}` : (n.url || '#');
     return `<a class="news-item" href="${esc(detailUrl)}" data-cat="${esc(n.category)}">

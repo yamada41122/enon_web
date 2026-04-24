@@ -123,9 +123,15 @@ function memberCardHTML(m, i) {
 }
 
 // NEWS
+function sortNewsByDateDesc() {
+  if (!state.news) return;
+  state.news.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+}
+
 function renderNews() {
   const list = document.getElementById('newsList');
   if (!state.news?.length) { list.innerHTML = '<div class="a-empty">ニュース未登録</div>'; return; }
+  sortNewsByDateDesc();
   list.innerHTML = state.news.map((n,i) => newsCardHTML(n,i)).join('');
   bindListHandlers('news');
 }
@@ -142,8 +148,6 @@ function newsCardHTML(n,i) {
         &nbsp;${esc(n.date||'')} - ${esc((n.title||'').slice(0,40))}
       </div>
       <div class="a-card__actions">
-        <button class="a-btn a-btn--ghost a-btn--sm" data-action="up">▲</button>
-        <button class="a-btn a-btn--ghost a-btn--sm" data-action="down">▼</button>
         <button class="a-btn a-btn--danger a-btn--sm" data-action="del">削除</button>
       </div>
     </div>
@@ -358,8 +362,18 @@ function bindListHandlers(key) {
       }
     }
 
-    // news-specific: image upload, id sanitization
+    // news-specific: image upload, id sanitization, date-based reorder
     if (key === 'news') {
+      // re-sort on date change (blur)
+      const dateInput = card.querySelector('input[data-k="date"]');
+      if (dateInput) {
+        dateInput.addEventListener('blur', () => {
+          sortNewsByDateDesc();
+          save();
+          renderNews();
+          setStatus('日付に応じて並び順を更新しました', 'ok');
+        });
+      }
       // sanitize ID on blur (keep URL-safe: alphanumeric, dash, underscore)
       const idInput = card.querySelector('[data-news-id-input]');
       if (idInput) {
@@ -520,7 +534,12 @@ function newSns() { return { label:'★ / SNS', url:'#' }; }
 
 function bindAddButtons() {
   document.getElementById('addMemberBtn').onclick = () => { state.members.push(newMember()); renumberMembers(); save(); renderMembers(); scrollToLast('membersList'); };
-  document.getElementById('addNewsBtn').onclick = () => { state.news.unshift(newNews()); save(); renderNews(); };
+  document.getElementById('addNewsBtn').onclick = () => {
+    state.news.unshift(newNews());
+    sortNewsByDateDesc();
+    save();
+    renderNews();
+  };
   document.getElementById('addScheduleBtn').onclick = () => { state.schedule.push(newSchedule()); save(); renderSchedule(); scrollToLast('scheduleList'); };
   document.getElementById('addGalleryBtn').onclick = () => { state.gallery.push(newGallery()); save(); renderGallery(); scrollToLast('galleryList'); };
   document.getElementById('addSnsBtn').onclick = () => { state.sns.push(newSns()); save(); renderSns(); scrollToLast('snsList'); };
@@ -667,6 +686,9 @@ async function publishToGitHub() {
 
   // Sync DOM form values into state as a safety net (in case a field didn't fire input)
   syncDomToState();
+  // ensure news is sorted by date descending before publish
+  sortNewsByDateDesc();
+  save();
 
   setStatus('GitHubに公開中...', '');
   try {
@@ -868,8 +890,9 @@ async function bootAdmin() {
     }
   }
 
-  // normalize: ensure news entries have IDs (migrations for old drafts)
+  // normalize: ensure news entries have IDs and sort by date desc
   ensureNewsIds();
+  sortNewsByDateDesc();
   save();
 
   renderAll();
