@@ -132,6 +132,8 @@ function renderNews() {
 
 function newsCardHTML(n,i) {
   const catOpts = NEWS_CATEGORIES.map(c => `<option value="${c}" ${n.category===c?'selected':''}>${c.toUpperCase()}</option>`).join('');
+  const hasImage = !!n.image;
+  const previewSrc = hasImage ? `../${esc(n.image)}` : '';
   return `
   <div class="a-card" data-index="${i}">
     <div class="a-card__head">
@@ -146,11 +148,31 @@ function newsCardHTML(n,i) {
       </div>
     </div>
     <div class="a-card__grid a-card__grid--4">
+      <label class="a-card__field"><span>ID (詳細URLに使用)</span><input data-k="id" value="${esc(n.id||'')}" readonly title="自動生成されるIDです。変更するとシェアされたリンクが無効になります"></label>
       <label class="a-card__field"><span>日付 (YYYY.MM.DD)</span><input data-k="date" value="${esc(n.date||'')}"></label>
       <label class="a-card__field"><span>カテゴリ</span><select data-k="category">${catOpts}</select></label>
       <label class="a-card__field a-card__field--wide"><span>タイトル</span><input data-k="title" value="${esc(n.title||'')}"></label>
-      <label class="a-card__field a-card__field--wide"><span>リンクURL（空欄可）</span><input data-k="url" value="${esc(n.url||'#')}"></label>
     </div>
+    <div class="a-gallery-row" style="margin-top:14px">
+      <div class="a-gallery-preview${hasImage ? '' : ' a-gallery-preview--empty'}">
+        ${hasImage ? `<img src="${previewSrc}" alt="" onerror="this.style.display='none';this.parentElement.classList.add('a-gallery-preview--err');this.parentElement.dataset.err='画像が見つかりません'">` : '<span>画像なし</span>'}
+      </div>
+      <div class="a-gallery-fields">
+        <label class="a-card__field"><span>画像パス（直接編集可）</span><input data-k="image" value="${esc(n.image||'')}" placeholder="images/news/photo.jpg"></label>
+        <div class="a-card__field">
+          <span>詳細ページの画像をアップロード</span>
+          <div class="a-upload">
+            <input type="file" accept="image/*" id="news-upload-${i}" data-news-upload-idx="${i}">
+            <label for="news-upload-${i}" class="a-btn a-btn--ghost a-btn--sm">📁 ファイルを選ぶ</label>
+            ${hasImage ? `<button type="button" class="a-btn a-btn--danger a-btn--sm" data-news-clear-image="${i}">画像をクリア</button>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+    <label class="a-card__field" style="margin-top:14px">
+      <span>本文（改行あり、段落は空行で区切る）</span>
+      <textarea data-k="body" rows="8" style="min-height:180px">${esc(n.body||'')}</textarea>
+    </label>
   </div>`;
 }
 
@@ -313,7 +335,7 @@ function bindListHandlers(key) {
           }
           try {
             setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB)...`, '');
-            const path = await uploadImageToGitHub(file);
+            const path = await uploadImageToGitHub(file, 'gallery');
             state.gallery[idx].image = path;
             save();
             renderGallery();
@@ -331,6 +353,46 @@ function bindListHandlers(key) {
           state.gallery[idx].image = '';
           save();
           renderGallery();
+          setStatus('画像をクリアしました', 'ok');
+        };
+      }
+    }
+
+    // news-specific: image upload and clear
+    if (key === 'news') {
+      const upInput = card.querySelector('[data-news-upload-idx]');
+      if (upInput) {
+        upInput.onchange = async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          if (!file.type.startsWith('image/')) {
+            setStatus('画像ファイルを選んでください', 'err');
+            return;
+          }
+          if (file.size > 20 * 1024 * 1024) {
+            setStatus('ファイルが大きすぎます（20MB以下にしてください）', 'err');
+            return;
+          }
+          try {
+            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB)...`, '');
+            const path = await uploadImageToGitHub(file, 'news');
+            state.news[idx].image = path;
+            save();
+            renderNews();
+            setStatus(`✓ 画像アップロード成功: ${path}`, 'ok');
+          } catch (err) {
+            setStatus('アップロード失敗: ' + err.message, 'err');
+          }
+          e.target.value = '';
+        };
+      }
+      const clearBtn = card.querySelector('[data-news-clear-image]');
+      if (clearBtn) {
+        clearBtn.onclick = () => {
+          if (!confirm('画像の関連付けをクリアしますか？（GitHub上のファイルは残ります）')) return;
+          state.news[idx].image = '';
+          save();
+          renderNews();
           setStatus('画像をクリアしました', 'ok');
         };
       }
@@ -356,14 +418,14 @@ function sanitizeFilename(name) {
   const base = name.replace(ext, '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40) || 'image';
   return base + ext;
 }
-async function uploadImageToGitHub(file) {
+async function uploadImageToGitHub(file, folder = 'gallery') {
   const s = loadSettings();
   if (!s.owner || !s.repo || !s.token) {
     throw new Error('接続設定を先に完了してください');
   }
   const fname = sanitizeFilename(file.name);
   const ts = Date.now();
-  const pathInRepo = `images/gallery/${ts}_${fname}`;
+  const pathInRepo = `images/${folder}/${ts}_${fname}`;
   const b64 = await fileToBase64(file);
   const apiUrl = `https://api.github.com/repos/${s.owner}/${s.repo}/contents/${pathInRepo}`;
 
@@ -375,7 +437,7 @@ async function uploadImageToGitHub(file) {
       Accept: 'application/vnd.github+json'
     },
     body: JSON.stringify({
-      message: `Upload gallery image: ${pathInRepo}`,
+      message: `Upload ${folder} image: ${pathInRepo}`,
       content: b64,
       branch: s.branch
     })
@@ -408,7 +470,25 @@ function renumberMembers() {
 function newNews() {
   const d = new Date();
   const pad = n => String(n).padStart(2,'0');
-  return { date:`${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())}`, category:'info', title:'新しいお知らせ', url:'#' };
+  const date = `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())}`;
+  const id = `news-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${Math.random().toString(36).slice(2,8)}`;
+  return {
+    id, date, category:'info',
+    title:'新しいお知らせ',
+    image:'',
+    body:'ここに本文を入力してください。\n\n段落を分けたいときは空行を挟みます。'
+  };
+}
+
+// ensure every news item has a stable id (auto-generate if missing)
+function ensureNewsIds() {
+  if (!state.news) return;
+  state.news.forEach((n, i) => {
+    if (!n.id) {
+      const safeDate = (n.date || '').replace(/\D/g, '') || String(Date.now());
+      n.id = `news-${safeDate}-${Math.random().toString(36).slice(2,6)}`;
+    }
+  });
 }
 function newSchedule() {
   return { year:'2026', month:'APR', day:'01', weekday:'MON', title:'新しい予定', meta:'会場名 / 時間', ctaType:'', ctaLabel:'Info', url:'#' };
@@ -748,6 +828,7 @@ function bindLogin() {
 
 // ---------- boot ----------
 async function bootAdmin() {
+  ensureNewsIds();
   bindTabs();
   bindAddButtons();
   bindTopActions();

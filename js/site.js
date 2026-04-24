@@ -92,14 +92,53 @@ function renderMemberDetails(members, el) {
 function renderNewsList(news, el, limit) {
   if (!el) return;
   const items = limit ? news.slice(0, limit) : news;
-  el.innerHTML = items.map(n => `
-    <a class="news-item" href="${esc(n.url || '#')}" data-cat="${esc(n.category)}">
+  el.innerHTML = items.map(n => {
+    const detailUrl = n.id ? `news-detail.html?id=${encodeURIComponent(n.id)}` : (n.url || '#');
+    return `<a class="news-item" href="${esc(detailUrl)}" data-cat="${esc(n.category)}">
       <span class="news-item__date">${esc(n.date)}</span>
       <span class="news-item__tag ${esc(n.category)}">${esc(categoryLabel(n.category))}</span>
       <span class="news-item__title">${esc(n.title)}</span>
       <span class="news-item__arrow">→</span>
-    </a>
-  `).join('');
+    </a>`;
+  }).join('');
+}
+
+function formatBody(body) {
+  if (!body) return '';
+  // escape HTML first, then convert double newlines to paragraph breaks, single newlines to <br>
+  const escaped = esc(body);
+  const paragraphs = escaped.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`);
+  return paragraphs.join('');
+}
+
+function renderNewsDetail(news, el) {
+  if (!el) return;
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  const item = news.find(n => n.id === id);
+  if (!item) {
+    el.innerHTML = `
+      <div class="news-detail news-detail--notfound">
+        <p>該当するお知らせが見つかりませんでした。</p>
+        <a class="news-detail__back" href="news.html">← News一覧に戻る</a>
+      </div>`;
+    document.title = 'お知らせが見つかりません | enon Official';
+    return;
+  }
+  el.innerHTML = `
+    <article class="news-detail">
+      <a class="news-detail__back news-detail__back--top" href="news.html">← News一覧に戻る</a>
+      <div class="news-detail__meta">
+        <span class="news-detail__date">${esc(item.date)}</span>
+        <span class="news-item__tag ${esc(item.category)}">${esc(categoryLabel(item.category))}</span>
+      </div>
+      <h1 class="news-detail__title">${esc(item.title)}</h1>
+      ${item.image ? `<div class="news-detail__image"><img src="${esc(item.image)}" alt="${esc(item.title)}" loading="eager" decoding="async"></div>` : ''}
+      <div class="news-detail__body">${formatBody(item.body)}</div>
+      <a class="news-detail__back" href="news.html">← News一覧に戻る</a>
+    </article>
+  `;
+  document.title = `${item.title} | enon Official`;
 }
 
 function categoryLabel(cat) {
@@ -265,6 +304,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // News page
   renderNewsList(data.news, document.querySelector('[data-slot="newsFull"]'));
   initNewsFilter();
+
+  // News detail page
+  renderNewsDetail(data.news, document.querySelector('[data-slot="newsDetail"]'));
 
   // Schedule page
   renderScheduleGrouped(data.schedule, document.querySelector('[data-slot="scheduleFull"]'));
