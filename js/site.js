@@ -164,9 +164,15 @@ function renderScheduleGrouped(schedule, el) {
 
 function renderGallery(gallery, el) {
   if (!el) return;
-  el.innerHTML = gallery.map(g => `
-    <div class="gallery-cell gallery-cell--${esc(g.color)}" data-label="${esc(g.label)}"></div>
-  `).join('');
+  el.innerHTML = gallery.map(g => {
+    const label = esc(g.label || '');
+    if (g.image) {
+      return `<div class="gallery-cell gallery-cell--image" data-label="${label}">
+        <img src="${esc(g.image)}" alt="${label}" loading="lazy" decoding="async">
+      </div>`;
+    }
+    return `<div class="gallery-cell gallery-cell--${esc(g.color || 'c1')}" data-label="${label}"></div>`;
+  }).join('');
 }
 
 function renderSns(sns, el) {

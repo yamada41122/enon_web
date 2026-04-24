@@ -200,19 +200,35 @@ function renderGallery() {
 
 function galleryCardHTML(g,i) {
   const cOpts = GALLERY_COLORS.map(c => `<option ${g.color===c?'selected':''}>${c}</option>`).join('');
+  const hasImage = !!g.image;
+  const previewSrc = hasImage ? `../${esc(g.image)}` : '';
   return `
   <div class="a-card" data-index="${i}">
     <div class="a-card__head">
-      <div class="a-card__label">[${esc(g.color||'')}] ${esc(g.label||'')}</div>
+      <div class="a-card__label">${hasImage ? '🖼 画像あり' : `[${esc(g.color||'c1')}] プレースホルダー`} / ${esc(g.label||'')}</div>
       <div class="a-card__actions">
         <button class="a-btn a-btn--ghost a-btn--sm" data-action="up">▲</button>
         <button class="a-btn a-btn--ghost a-btn--sm" data-action="down">▼</button>
         <button class="a-btn a-btn--danger a-btn--sm" data-action="del">削除</button>
       </div>
     </div>
-    <div class="a-card__grid">
-      <label class="a-card__field"><span>背景カラー (c1〜c8)</span><select data-k="color">${cOpts}</select></label>
-      <label class="a-card__field"><span>ラベル</span><input data-k="label" value="${esc(g.label||'')}"></label>
+    <div class="a-gallery-row">
+      <div class="a-gallery-preview${hasImage ? '' : ' a-gallery-preview--empty'}">
+        ${hasImage ? `<img src="${previewSrc}" alt="" onerror="this.style.display='none';this.parentElement.classList.add('a-gallery-preview--err');this.parentElement.dataset.err='画像が見つかりません'">` : '<span>画像なし</span>'}
+      </div>
+      <div class="a-gallery-fields">
+        <label class="a-card__field"><span>ラベル</span><input data-k="label" value="${esc(g.label||'')}"></label>
+        <label class="a-card__field"><span>画像パス（直接編集可）</span><input data-k="image" value="${esc(g.image||'')}" placeholder="images/gallery/photo.jpg"></label>
+        <div class="a-card__field">
+          <span>画像を選択してアップロード</span>
+          <div class="a-upload">
+            <input type="file" accept="image/*" id="gallery-upload-${i}" data-upload-idx="${i}">
+            <label for="gallery-upload-${i}" class="a-btn a-btn--ghost a-btn--sm">📁 ファイルを選ぶ</label>
+            ${hasImage ? `<button type="button" class="a-btn a-btn--danger a-btn--sm" data-clear-image="${i}">画像をクリア</button>` : ''}
+          </div>
+        </div>
+        <label class="a-card__field"><span>画像なしの時の背景カラー</span><select data-k="color">${cOpts}</select></label>
+      </div>
     </div>
   </div>`;
 }
@@ -278,7 +294,96 @@ function bindListHandlers(key) {
         setStatus(`${key} を更新しました`, 'ok');
       };
     });
+
+    // gallery-specific: image upload and clear
+    if (key === 'gallery') {
+      const upInput = card.querySelector('[data-upload-idx]');
+      if (upInput) {
+        upInput.onchange = async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          if (!file.type.startsWith('image/')) {
+            setStatus('画像ファイルを選んでください', 'err');
+            return;
+          }
+          if (file.size > 20 * 1024 * 1024) {
+            setStatus('ファイルが大きすぎます（20MB以下にしてください）', 'err');
+            return;
+          }
+          try {
+            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB)...`, '');
+            const path = await uploadImageToGitHub(file);
+            state.gallery[idx].image = path;
+            save();
+            renderGallery();
+            setStatus(`✓ 画像アップロード成功: ${path}`, 'ok');
+          } catch (err) {
+            setStatus('アップロード失敗: ' + err.message, 'err');
+          }
+          e.target.value = '';
+        };
+      }
+      const clearBtn = card.querySelector('[data-clear-image]');
+      if (clearBtn) {
+        clearBtn.onclick = () => {
+          if (!confirm('画像の関連付けをクリアしますか？（GitHub上のファイルは残ります）')) return;
+          state.gallery[idx].image = '';
+          save();
+          renderGallery();
+          setStatus('画像をクリアしました', 'ok');
+        };
+      }
+    }
   });
+}
+
+// ---------- Image upload to GitHub ----------
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => {
+      const dataUrl = r.result;
+      const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
+      resolve(b64);
+    };
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+function sanitizeFilename(name) {
+  const ext = (name.match(/\.[a-zA-Z0-9]+$/) || [''])[0].toLowerCase();
+  const base = name.replace(ext, '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40) || 'image';
+  return base + ext;
+}
+async function uploadImageToGitHub(file) {
+  const s = loadSettings();
+  if (!s.owner || !s.repo || !s.token) {
+    throw new Error('接続設定を先に完了してください');
+  }
+  const fname = sanitizeFilename(file.name);
+  const ts = Date.now();
+  const pathInRepo = `images/gallery/${ts}_${fname}`;
+  const b64 = await fileToBase64(file);
+  const apiUrl = `https://api.github.com/repos/${s.owner}/${s.repo}/contents/${pathInRepo}`;
+
+  const res = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${s.token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.github+json'
+    },
+    body: JSON.stringify({
+      message: `Upload gallery image: ${pathInRepo}`,
+      content: b64,
+      branch: s.branch
+    })
+  });
+  if (!res.ok) {
+    const j = await res.json().catch(() => ({}));
+    throw new Error(`HTTP ${res.status} - ${j.message || ''}`);
+  }
+  return pathInRepo;
 }
 
 // ---------- adds ----------
