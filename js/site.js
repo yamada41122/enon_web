@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderScheduleGrouped(data.schedule, document.querySelector('[data-slot="scheduleFull"]'));
 
   // After render: init scroll reveals for all dynamic items
-  initReveal('.section__inner, .hero__concept, .member-card, .schedule-row, .news-item, .member-detail');
+  initReveal('.section__head, .member-card, .schedule-row, .news-item, .member-detail, .gallery-cell, .sns-link, .pagehead__inner');
 
   // handle hash scroll after members render
   if (location.hash) {
