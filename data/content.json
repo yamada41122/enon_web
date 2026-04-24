@@ -29,7 +29,7 @@
     },
     {
       "id": "yuna",
-      "no": "04",
+      "no": "02",
       "initial": "Y",
       "colorVar": "--c-yuna",
       "colorEn": "ROSE PINK",
@@ -47,7 +47,7 @@
     },
     {
       "id": "rin",
-      "no": "05",
+      "no": "03",
       "initial": "R",
       "colorVar": "--c-rin",
       "colorEn": "SHINY YELLOW",
@@ -65,7 +65,7 @@
     },
     {
       "id": "fuwari",
-      "no": "03",
+      "no": "04",
       "initial": "F",
       "colorVar": "--c-fuwari",
       "colorEn": "CLOUD BLUE",
@@ -83,17 +83,17 @@
     },
     {
       "id": "mori",
-      "no": "02",
+      "no": "05",
       "initial": "M",
       "colorVar": "--c-mori",
-      "colorEn": "PALE GREEN",
-      "colorJp": "ペイルグリーン",
+      "colorEn": "GREEN",
+      "colorJp": "グリーン",
       "nameEn": "Hoshie Mori",
       "nameJpFamily": "星江",
       "nameJpGiven": "森",
       "reading": "ほしえ もり",
-      "catch": "「挑戦するのは遅かったかもしれませんが、情熱だけは誰にも負けません。」",
-      "bio": "韓国出身。アイドルにしかできない“癒し”を届けたいという想いでenonに加入。アクセサリー作りが特技で、ステージではファンが喜ぶ姿をじっと見つめている。まだ未熟な部分もあるが、必ず成長した姿で会いに行く——そんな強さを内に秘めたメンバー。山羊座・B型。",
+      "catch": "「遅く挑戦しましたが、情熱だけは誰よりも先んじます。」",
+      "bio": "韓国出身。アイドルだけができる慰めをしたいという想いでenonに。アクセサリー作りが特技で、ステージではファンが喜んでいる様子をじっと見ている。未熟な点はあっても、必ず成長した姿で会いに行く——そんな強さを内に秘めるメンバー。山羊座・B型。",
       "position": "Vocal / Dance",
       "birth": "1月12日",
       "hobby": "アクセサリー作り、ヴィンテージ服集め",
@@ -102,37 +102,19 @@
   ],
   "news": [
     {
-      "date": "2026.04.22",
+      "date": "2026.04.29",
       "category": "live",
-      "title": "デビューライブ「enon 1st contact」最終チケット受付開始",
-      "url": "#"
+      "title": "デビューライブ「first light」",
+      "url": "https://tiget.net/events/481155"
     },
     {
       "date": "2026.04.18",
-      "category": "media",
-      "title": "月刊「IDOL WAVE」5月号にメンバー全員掲載決定",
-      "url": "#"
-    },
-    {
-      "date": "2026.04.15",
-      "category": "goods",
-      "title": "デビュー記念グッズラインナップ公開 ― メンバーカラーTシャツ・アクスタ 他",
-      "url": "#"
-    },
-    {
-      "date": "2026.04.10",
       "category": "info",
-      "title": "公式SNS・ファンクラブ運用開始のお知らせ",
-      "url": "#"
+      "title": "enon debut live「first light」販売開始",
+      "url": "https://tiget.net/events/481155"
     },
     {
-      "date": "2026.04.07",
-      "category": "media",
-      "title": "デビュー曲「Encounter」ミュージックビデオをYouTubeにてプレミア公開決定",
-      "url": "#"
-    },
-    {
-      "date": "2026.04.01",
+      "date": "2026.04.24",
       "category": "info",
       "title": "オフィシャルWEBサイトを公開しました",
       "url": "#"
@@ -142,12 +124,6 @@
       "category": "info",
       "title": "新人アイドルグループ「enon」始動のお知らせ",
       "url": "#"
-    },
-    {
-      "date": "2026.03.20",
-      "category": "live",
-      "title": "6月7日 渋谷WWW Xにて 1st ワンマンライブ「En」開催決定",
-      "url": "#"
     }
   ],
   "schedule": [
@@ -156,120 +132,43 @@
       "month": "APR",
       "day": "29",
       "weekday": "WED",
-      "title": "enon 1st contact – Debut Live –",
-      "meta": "渋谷 Garret / OPEN 18:30 / START 19:00 / ADV ¥3,500",
+      "title": "enon 1st live – Debut Live –",
+      "meta": "渋谷 Garret / OPEN 11:30 / START 12:00 / ADV ¥500+1D",
       "ctaType": "debut",
       "ctaLabel": "Ticket",
-      "url": "#"
-    },
-    {
-      "year": "2026",
-      "month": "MAY",
-      "day": "03",
-      "weekday": "SUN",
-      "title": "enon 無料お披露目ミニライブ",
-      "meta": "渋谷モディ前 特設ステージ / 13:00 ~ / 入場無料",
-      "ctaType": "",
-      "ctaLabel": "Info",
-      "url": "#"
-    },
-    {
-      "year": "2026",
-      "month": "MAY",
-      "day": "17",
-      "weekday": "SUN",
-      "title": "IDOL NEXT WAVE vol.12 出演",
-      "meta": "新宿 LOFT / 対バンイベント / 6組出演予定",
-      "ctaType": "",
-      "ctaLabel": "Ticket",
-      "url": "#"
-    },
-    {
-      "year": "2026",
-      "month": "MAY",
-      "day": "24",
-      "weekday": "SUN",
-      "title": "FM NACK5「IDOL CONNECT」ゲスト生出演",
-      "meta": "月詠ほのか・一ノ瀬ゆな 出演 / 22:00 ON AIR",
-      "ctaType": "",
-      "ctaLabel": "Media",
-      "url": "#"
-    },
-    {
-      "year": "2026",
-      "month": "MAY",
-      "day": "31",
-      "weekday": "SUN",
-      "title": "特典会&ミニライブ @ タワーレコード渋谷",
-      "meta": "15:00 ~ / CD購入者対象イベント",
-      "ctaType": "",
-      "ctaLabel": "Info",
-      "url": "#"
-    },
-    {
-      "year": "2026",
-      "month": "JUN",
-      "day": "07",
-      "weekday": "SUN",
-      "title": "enon 1st one-man「En」",
-      "meta": "渋谷 WWW X / OPEN 17:00 / START 18:00 / ADV ¥4,800",
-      "ctaType": "debut",
-      "ctaLabel": "Ticket",
-      "url": "#"
-    },
-    {
-      "year": "2026",
-      "month": "JUN",
-      "day": "21",
-      "weekday": "SUN",
-      "title": "TOKYO IDOL SUMMER FES 2026 出演",
-      "meta": "豊洲PIT / 大型フェス出演決定",
-      "ctaType": "",
-      "ctaLabel": "Ticket",
-      "url": "#"
-    },
-    {
-      "year": "2026",
-      "month": "JUN",
-      "day": "28",
-      "weekday": "SUN",
-      "title": "enon 定期公演 Vol.01",
-      "meta": "下北沢 SHELTER / START 19:00",
-      "ctaType": "",
-      "ctaLabel": "Info",
-      "url": "#"
+      "url": "https://tiget.net/events/481155"
     }
   ],
   "gallery": [
     {
-      "label": "GROUP / JACKET A",
+      "label": "enon logo",
       "color": "c1",
-      "image": ""
+      "image": "images/gallery/1777043567067_enon_logo.png"
     },
     {
-      "label": "MORI / STAGE",
+      "label": "MORI / PROFILE",
       "color": "c2",
-      "image": ""
+      "image": "images/gallery/1777043741594_mori_top.jpeg"
     },
     {
       "label": "FUWARI / OFFSHOT",
       "color": "c3",
-      "image": ""
+      "image": "images/gallery/1777043961974_fuwari_off.jpeg"
     },
     {
-      "label": "YUNA / VISUAL",
+      "label": "YUNA / OFFSHOT",
       "color": "c4",
-      "image": ""
+      "image": "images/gallery/1777044262874_yuna_off.jpeg"
     },
     {
-      "label": "RIN / STUDIO",
+      "label": "RIN / OFFSHOT",
       "color": "c5",
-      "image": ""
+      "image": "images/gallery/1777044479194_rin_off.png"
     },
     {
-      "label": "HONOKA / MONO",
+      "label": "HONOKA / OFFSHOT",
       "color": "c6",
-      "image": ""
+      "image": "images/gallery/1777044545729_honoka_off.png"
     },
     {
       "label": "GROUP / REHEARSAL",
@@ -285,23 +184,7 @@
   "sns": [
     {
       "label": "× / Twitter",
-      "url": "#"
-    },
-    {
-      "label": "◎ / Instagram",
-      "url": "#"
-    },
-    {
-      "label": "▶ / YouTube",
-      "url": "#"
-    },
-    {
-      "label": "♪ / TikTok",
-      "url": "#"
-    },
-    {
-      "label": "◇ / Fanclub",
-      "url": "#"
+      "url": "https://x.com/enon_idol"
     }
   ]
 }
