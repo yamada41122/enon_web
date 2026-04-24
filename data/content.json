@@ -141,36 +141,44 @@
   ],
   "gallery": [
     {
-      "label": "GROUP / JACKET A",
-      "color": "c1"
+      "label": "enon logo",
+      "color": "c1",
+      "image": "images/gallery/1777043567067_enon_logo.png"
     },
     {
       "label": "MORI / STAGE",
-      "color": "c2"
+      "color": "c2",
+      "image": ""
     },
     {
       "label": "FUWARI / OFFSHOT",
-      "color": "c3"
+      "color": "c3",
+      "image": ""
     },
     {
       "label": "YUNA / VISUAL",
-      "color": "c4"
+      "color": "c4",
+      "image": ""
     },
     {
       "label": "RIN / STUDIO",
-      "color": "c5"
+      "color": "c5",
+      "image": ""
     },
     {
       "label": "HONOKA / MONO",
-      "color": "c6"
+      "color": "c6",
+      "image": ""
     },
     {
       "label": "GROUP / REHEARSAL",
-      "color": "c7"
+      "color": "c7",
+      "image": ""
     },
     {
       "label": "GROUP / JACKET B",
-      "color": "c8"
+      "color": "c8",
+      "image": ""
     }
   ],
   "sns": [
