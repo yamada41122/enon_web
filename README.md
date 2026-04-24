@@ -44,7 +44,7 @@
 `/admin/` を開くと、Members / News / Schedule / Gallery / SNS / グループ設定を編集できます。
 
 **編集フロー:**
-1. 公開URL + `/admin/` を開く（例: `https://yamada41122.github.io/enon_web/admin/`）
+1. 公開URL + `/admin/` を開く（例: `https://enon-idol.com/admin/`）
 2. 各タブで編集（入力内容は自動的にブラウザ内に保存）
 3. **プレビュー** ボタンで編集中の内容を別タブで確認
 4. **content.json をダウンロード** で編集済みJSONを保存
@@ -63,4 +63,5 @@ python3 -m http.server 8000
 
 ## Deploy
 
-GitHub Pages で公開。`main` ブランチへのpushで自動反映されます。
+GitHub Pages で公開（カスタムドメイン `enon-idol.com`）。`main` ブランチへのpushで自動反映されます。
+公開URL: <https://enon-idol.com>
