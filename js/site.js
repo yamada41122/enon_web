@@ -112,9 +112,24 @@ function renderNewsList(news, el, limit) {
 
 function formatBody(body) {
   if (!body) return '';
-  // escape HTML first, then convert double newlines to paragraph breaks, single newlines to <br>
+  // escape HTML first
   const escaped = esc(body);
-  const paragraphs = escaped.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`);
+  // detect URLs and wrap them as clickable links (open in new tab)
+  // exclude Japanese characters so URLs followed immediately by Japanese text are detected correctly
+  const URL_RE = /(https?:\/\/[^\s<>"'、。「」（）\u3000-\u9FFF\uFF00-\uFFEF]+)/g;
+  const linkified = escaped.replace(URL_RE, (m) => {
+    // strip trailing punctuation that's likely sentence terminator, not part of URL
+    const trailMatch = m.match(/[.,;:!?)）]+$/);
+    let url = m;
+    let trail = '';
+    if (trailMatch) {
+      trail = trailMatch[0];
+      url = m.slice(0, -trail.length);
+    }
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>${trail}`;
+  });
+  // convert double newlines to paragraphs, single newlines to <br>
+  const paragraphs = linkified.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`);
   return paragraphs.join('');
 }
 

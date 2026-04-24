@@ -531,6 +531,16 @@ body::after{
 }
 .news-detail__body p{margin-bottom:1.5em}
 .news-detail__body p:last-child{margin-bottom:0}
+.news-detail__body a{
+  color:var(--c-fuwari);
+  text-decoration:underline;
+  text-underline-offset:3px;
+  word-break:break-all;
+  transition:color .2s, opacity .2s;
+}
+.news-detail__body a:hover{
+  color:#fff;opacity:1;
+}
 .news-detail--notfound{
   padding:60px 20px;text-align:center;color:var(--text-dim);gap:20px;
 }
