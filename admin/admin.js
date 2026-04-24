@@ -72,7 +72,7 @@ function renderGroup() {
 
 // MEMBERS
 function renderMembers() {
-  const list = document.getElementById('memberList');
+  const list = document.getElementById('membersList');
   if (!state.members?.length) {
     list.innerHTML = '<div class="a-empty">メンバー未登録</div>';
     return;
@@ -301,7 +301,7 @@ function newGallery() {
 function newSns() { return { label:'★ / SNS', url:'#' }; }
 
 function bindAddButtons() {
-  document.getElementById('addMemberBtn').onclick = () => { state.members.push(newMember()); save(); renderMembers(); scrollToLast('memberList'); };
+  document.getElementById('addMemberBtn').onclick = () => { state.members.push(newMember()); save(); renderMembers(); scrollToLast('membersList'); };
   document.getElementById('addNewsBtn').onclick = () => { state.news.unshift(newNews()); save(); renderNews(); };
   document.getElementById('addScheduleBtn').onclick = () => { state.schedule.push(newSchedule()); save(); renderSchedule(); scrollToLast('scheduleList'); };
   document.getElementById('addGalleryBtn').onclick = () => { state.gallery.push(newGallery()); save(); renderGallery(); scrollToLast('galleryList'); };
@@ -447,21 +447,23 @@ async function publishToGitHub() {
     return;
   }
 
-  const msg = prompt('コミットメッセージを入力してください', 'Update site content via admin');
-  if (!msg) return;
+  // Sync DOM form values into state as a safety net (in case a field didn't fire input)
+  syncDomToState();
 
   setStatus('GitHubに公開中...', '');
   try {
     const apiBase = `https://api.github.com/repos/${s.owner}/${s.repo}/contents/${CONTENT_PATH}`;
 
-    // 1) get current SHA (if file exists)
+    // 1) get current file
     let sha = null;
+    let currentB64 = '';
     const cur = await fetch(`${apiBase}?ref=${encodeURIComponent(s.branch)}`, {
       headers: { Authorization: `token ${s.token}`, Accept:'application/vnd.github+json' }
     });
     if (cur.ok) {
       const j = await cur.json();
       sha = j.sha;
+      currentB64 = (j.content || '').replace(/\s/g, '');
     } else if (cur.status !== 404) {
       throw new Error(`取得失敗: HTTP ${cur.status} - ${(await cur.json()).message || ''}`);
     }
@@ -470,10 +472,19 @@ async function publishToGitHub() {
     const json = JSON.stringify(state, null, 2);
     const b64 = utf8ToBase64(json);
 
+    // 3) diff check — skip if nothing changed
+    if (currentB64 === b64) {
+      setStatus('⚠ 変更はありません（公開中の内容と完全に同じです）。フィールドを編集してから再度お試しください。', 'err');
+      return;
+    }
+
+    const msg = prompt('コミットメッセージを入力してください', 'Update site content via admin');
+    if (!msg) { setStatus('キャンセルしました', ''); return; }
+
     const body = { message: msg, content: b64, branch: s.branch };
     if (sha) body.sha = sha;
 
-    // 3) PUT
+    // 4) PUT
     const res = await fetch(apiBase, {
       method: 'PUT',
       headers: { Authorization: `token ${s.token}`, 'Content-Type':'application/json', Accept:'application/vnd.github+json' },
@@ -484,10 +495,32 @@ async function publishToGitHub() {
       throw new Error(`HTTP ${res.status} - ${j.message || ''}`);
     }
     const result = await res.json();
-    setStatus(`✓ 公開成功: commit ${result.commit.sha.slice(0,7)} — 数十秒後にサイトに反映されます`, 'ok');
+    const sizeKB = (json.length / 1024).toFixed(1);
+    setStatus(`✓ 公開成功: commit ${result.commit.sha.slice(0,7)} (${sizeKB} KB) — 数十秒後にサイトに反映されます`, 'ok');
   } catch (e) {
     setStatus('公開失敗: ' + e.message, 'err');
   }
+}
+
+// Safety net: read all input/select/textarea values from DOM back into state
+function syncDomToState() {
+  // group inputs
+  document.querySelectorAll('[data-group]').forEach(inp => {
+    state.group[inp.dataset.group] = inp.value;
+  });
+  // list items (members/news/schedule/gallery/sns)
+  ['members','news','schedule','gallery','sns'].forEach(key => {
+    const listEl = document.getElementById(key + 'List');
+    if (!listEl) return;
+    listEl.querySelectorAll('.a-card').forEach(card => {
+      const idx = Number(card.dataset.index);
+      if (!state[key] || !state[key][idx]) return;
+      card.querySelectorAll('[data-k]').forEach(inp => {
+        state[key][idx][inp.dataset.k] = inp.value;
+      });
+    });
+  });
+  save();
 }
 
 function utf8ToBase64(str) {
