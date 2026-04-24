@@ -179,3 +179,64 @@ button{font:inherit;cursor:pointer}
 }
 .a-drag-handle:hover{color:var(--a-text);border-color:var(--a-text)}
 .a-empty{padding:40px;text-align:center;color:var(--a-text-dim);border:1px dashed var(--a-line-strong);border-radius:10px}
+
+/* ---------- LOGIN GATE ---------- */
+body.a-locked > .a-header,
+body.a-locked > .a-status,
+body.a-locked > .a-tabs,
+body.a-locked > .a-main,
+body.a-locked > .a-footer{
+  display:none !important;
+}
+.a-login{
+  position:fixed;inset:0;z-index:100;
+  display:flex;align-items:center;justify-content:center;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(61,220,132,.08), transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(79,209,255,.06), transparent 50%),
+    var(--a-bg);
+  padding:24px;
+}
+body:not(.a-locked) .a-login{display:none}
+.a-login__card{
+  width:100%;max-width:420px;
+  background:var(--a-panel);border:1px solid var(--a-line-strong);border-radius:14px;
+  padding:40px 34px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);
+  animation:loginIn .5s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes loginIn{
+  from{opacity:0;transform:translateY(20px) scale(.96)}
+  to{opacity:1;transform:none}
+}
+.a-login__logo{
+  display:block;margin:0 auto 18px;height:48px;width:auto;
+  filter:drop-shadow(0 0 20px rgba(255,255,255,.3));
+}
+.a-login__title{
+  font-family:'Unbounded',sans-serif;font-size:22px;font-weight:800;letter-spacing:.1em;
+  text-align:center;margin-bottom:4px;
+}
+.a-login__sub{
+  text-align:center;color:var(--a-text-dim);font-size:12px;letter-spacing:.1em;
+  margin-bottom:28px;
+}
+.a-login form{display:flex;flex-direction:column;gap:16px}
+.a-login .a-field input{
+  background:var(--a-bg);color:var(--a-text);
+  border:1px solid var(--a-line-strong);border-radius:6px;
+  padding:12px 14px;font-size:15px;font-family:inherit;
+  transition:border-color .2s;
+}
+.a-login .a-field input:focus{outline:none;border-color:var(--a-accent)}
+.a-login__remember{
+  display:flex;align-items:center;gap:8px;
+  color:var(--a-text-dim);font-size:12px;letter-spacing:.05em;margin-top:4px;
+  cursor:pointer;user-select:none;
+}
+.a-login__remember input{accent-color:var(--a-accent)}
+.a-login__submit{margin-top:10px;padding:14px;font-size:13px}
+.a-login__error{
+  background:rgba(255,90,110,.1);border:1px solid var(--a-danger);
+  color:var(--a-danger);padding:10px 14px;border-radius:6px;
+  font-size:13px;letter-spacing:.02em;
+}

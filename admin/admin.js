@@ -4,8 +4,14 @@
 
 const DRAFT_KEY = 'enonSiteDraft';
 const SETTINGS_KEY = 'enonAdminSettings';
+const AUTH_KEY = 'enonAdminAuth';
 const DATA_URL = '../data/content.json';
 const CONTENT_PATH = 'data/content.json';
+
+// sha256("taiki:tike1202#:enon_admin_salt_2026")
+const EXPECTED_HASH = '286ec8fa166711cda8b43ac4c546ee8ac080ecb7d29307fb3023d6bcbe4c3d15';
+const AUTH_SALT = 'enon_admin_salt_2026';
+const AUTH_MAX_AGE = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 const COLOR_OPTIONS = [
   { var:'--c-honoka', en:'WHITE',   jp:'ホワイト' },
@@ -550,8 +556,84 @@ function esc(s) {
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
+// ---------- Auth ----------
+async function sha256(text) {
+  const buf = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+function getAuthRecord() {
+  try {
+    // check persistent auth first
+    const persistent = localStorage.getItem(AUTH_KEY);
+    if (persistent) {
+      const r = JSON.parse(persistent);
+      if (r.expire && r.expire > Date.now()) return r;
+      localStorage.removeItem(AUTH_KEY);
+    }
+    // session auth
+    const session = sessionStorage.getItem(AUTH_KEY);
+    if (session) return JSON.parse(session);
+  } catch {}
+  return null;
+}
+function setAuthRecord(remember) {
+  const r = { ok: true, at: Date.now(), expire: Date.now() + AUTH_MAX_AGE };
+  if (remember) localStorage.setItem(AUTH_KEY, JSON.stringify(r));
+  else sessionStorage.setItem(AUTH_KEY, JSON.stringify(r));
+}
+function clearAuth() {
+  localStorage.removeItem(AUTH_KEY);
+  sessionStorage.removeItem(AUTH_KEY);
+}
+function unlockAdmin() {
+  document.body.classList.remove('a-locked');
+}
+function lockAdmin() {
+  document.body.classList.add('a-locked');
+  const u = document.getElementById('loginUser');
+  const p = document.getElementById('loginPass');
+  if (u) u.value = '';
+  if (p) p.value = '';
+}
+
+function bindLogin() {
+  const form = document.getElementById('loginForm');
+  const errEl = document.getElementById('loginError');
+  if (!form) return;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errEl.hidden = true;
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const remember = document.getElementById('loginRemember').checked;
+    const hash = await sha256(`${user}:${pass}:${AUTH_SALT}`);
+    if (hash === EXPECTED_HASH) {
+      setAuthRecord(remember);
+      unlockAdmin();
+      // init admin content after auth
+      if (!window.__adminBooted) {
+        window.__adminBooted = true;
+        bootAdmin();
+      }
+    } else {
+      errEl.textContent = 'ユーザー名またはパスワードが間違っています';
+      errEl.hidden = false;
+    }
+  });
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.onclick = () => {
+      if (!confirm('ログアウトしますか？')) return;
+      clearAuth();
+      lockAdmin();
+    };
+  }
+}
+
 // ---------- boot ----------
-(async function boot() {
+async function bootAdmin() {
   bindTabs();
   bindAddButtons();
   bindTopActions();
@@ -575,4 +657,19 @@ function esc(s) {
   }
 
   renderAll();
+}
+
+// ---------- Entry ----------
+(function () {
+  bindLogin();
+  const auth = getAuthRecord();
+  if (auth && auth.ok) {
+    unlockAdmin();
+    window.__adminBooted = true;
+    bootAdmin();
+  } else {
+    lockAdmin();
+    // focus on user field for convenience
+    setTimeout(() => document.getElementById('loginUser')?.focus(), 100);
+  }
 })();

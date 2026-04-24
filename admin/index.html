@@ -5,10 +5,35 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>enon Admin | コンテンツ管理</title>
 <meta name="robots" content="noindex,nofollow">
-<link rel="icon" type="image/svg+xml" href="../images/logo.png">
+<link rel="icon" type="image/png" href="../images/logo.png">
 <link rel="stylesheet" href="admin.css">
 </head>
-<body>
+<body class="a-locked">
+
+<!-- LOGIN GATE -->
+<div class="a-login" id="loginGate">
+  <div class="a-login__card">
+    <img src="../images/logo.png" alt="enon" class="a-login__logo">
+    <h1 class="a-login__title">Admin Login</h1>
+    <p class="a-login__sub">enon コンテンツ管理画面</p>
+    <form id="loginForm" autocomplete="off">
+      <label class="a-field">
+        <span>ユーザー名</span>
+        <input type="text" id="loginUser" autocomplete="username" required>
+      </label>
+      <label class="a-field">
+        <span>パスワード</span>
+        <input type="password" id="loginPass" autocomplete="current-password" required>
+      </label>
+      <label class="a-login__remember">
+        <input type="checkbox" id="loginRemember" checked>
+        <span>このデバイスで記憶する（30日）</span>
+      </label>
+      <div class="a-login__error" id="loginError" hidden></div>
+      <button type="submit" class="a-btn a-btn--primary a-login__submit">ログイン</button>
+    </form>
+  </div>
+</div>
 
 <header class="a-header">
   <div class="a-header__brand">
@@ -24,6 +49,7 @@
     <button class="a-btn a-btn--ghost" id="previewBtn">プレビュー</button>
     <button class="a-btn a-btn--ghost" id="downloadBtn" title="content.jsonをダウンロード">ダウンロード</button>
     <button class="a-btn a-btn--primary" id="publishBtn">🚀 サイトに公開</button>
+    <button class="a-btn a-btn--ghost" id="logoutBtn" title="ログアウト">ログアウト</button>
     <input type="file" id="importFile" accept=".json,application/json" hidden>
   </div>
 </header>
