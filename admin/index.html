@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>enon Admin | コンテンツ管理</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/svg+xml" href="../images/logo.png">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<header class="a-header">
+  <div class="a-header__brand">
+    <img src="../images/logo.png" alt="enon" class="a-header__logo">
+    <div>
+      <div class="a-header__title">Admin</div>
+      <div class="a-header__sub">コンテンツ管理画面</div>
+    </div>
+  </div>
+  <div class="a-header__actions">
+    <button class="a-btn a-btn--ghost" id="loadFromFileBtn">サーバーから再読み込み</button>
+    <button class="a-btn a-btn--ghost" id="importBtn">JSON読み込み</button>
+    <button class="a-btn a-btn--ghost" id="previewBtn">プレビュー</button>
+    <button class="a-btn a-btn--primary" id="downloadBtn">content.json をダウンロード</button>
+    <input type="file" id="importFile" accept=".json,application/json" hidden>
+  </div>
+</header>
+
+<div class="a-status" id="status"></div>
+
+<nav class="a-tabs">
+  <button class="a-tab active" data-tab="group">グループ設定</button>
+  <button class="a-tab" data-tab="members">Members</button>
+  <button class="a-tab" data-tab="news">News</button>
+  <button class="a-tab" data-tab="schedule">Schedule</button>
+  <button class="a-tab" data-tab="gallery">Gallery</button>
+  <button class="a-tab" data-tab="sns">SNS</button>
+</nav>
+
+<main class="a-main">
+
+  <!-- GROUP -->
+  <section class="a-pane active" data-pane="group">
+    <h2 class="a-pane__title">グループ設定</h2>
+    <p class="a-pane__desc">サイト全体で使われる基本情報です。</p>
+    <div class="a-grid">
+      <label class="a-field">
+        <span>グループ名</span>
+        <input type="text" data-group="name">
+      </label>
+      <label class="a-field">
+        <span>読み方</span>
+        <input type="text" data-group="reading">
+      </label>
+      <label class="a-field a-field--wide">
+        <span>タグライン（ヒーロー上部の英文コピー）</span>
+        <input type="text" data-group="tagline">
+      </label>
+      <label class="a-field a-field--wide">
+        <span>コンセプト 1行目（HTMLタグ使用可）</span>
+        <input type="text" data-group="conceptLine1">
+      </label>
+      <label class="a-field a-field--wide">
+        <span>コンセプト 2行目</span>
+        <input type="text" data-group="conceptLine2">
+      </label>
+      <label class="a-field">
+        <span>コピーライト</span>
+        <input type="text" data-group="copyright">
+      </label>
+      <label class="a-field">
+        <span>デビュー情報（フッター右）</span>
+        <input type="text" data-group="debutLine">
+      </label>
+    </div>
+  </section>
+
+  <!-- MEMBERS -->
+  <section class="a-pane" data-pane="members">
+    <div class="a-pane__head">
+      <div>
+        <h2 class="a-pane__title">Members</h2>
+        <p class="a-pane__desc">メンバー情報の追加・編集・並び替え・削除。</p>
+      </div>
+      <button class="a-btn a-btn--primary" id="addMemberBtn">＋ メンバー追加</button>
+    </div>
+    <div class="a-list" id="memberList"></div>
+  </section>
+
+  <!-- NEWS -->
+  <section class="a-pane" data-pane="news">
+    <div class="a-pane__head">
+      <div>
+        <h2 class="a-pane__title">News</h2>
+        <p class="a-pane__desc">お知らせ一覧。上にある項目ほどサイトの上部に表示されます。</p>
+      </div>
+      <button class="a-btn a-btn--primary" id="addNewsBtn">＋ ニュース追加</button>
+    </div>
+    <div class="a-list" id="newsList"></div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section class="a-pane" data-pane="schedule">
+    <div class="a-pane__head">
+      <div>
+        <h2 class="a-pane__title">Schedule</h2>
+        <p class="a-pane__desc">ライブ・イベント・メディア出演情報。</p>
+      </div>
+      <button class="a-btn a-btn--primary" id="addScheduleBtn">＋ スケジュール追加</button>
+    </div>
+    <div class="a-list" id="scheduleList"></div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="a-pane" data-pane="gallery">
+    <div class="a-pane__head">
+      <div>
+        <h2 class="a-pane__title">Gallery</h2>
+        <p class="a-pane__desc">ギャラリーセルのラベルと背景カラー（c1〜c8）。</p>
+      </div>
+      <button class="a-btn a-btn--primary" id="addGalleryBtn">＋ ギャラリー追加</button>
+    </div>
+    <div class="a-list" id="galleryList"></div>
+  </section>
+
+  <!-- SNS -->
+  <section class="a-pane" data-pane="sns">
+    <div class="a-pane__head">
+      <div>
+        <h2 class="a-pane__title">SNS リンク</h2>
+        <p class="a-pane__desc">トップページ下部のSNSボタンのリンクとラベル。</p>
+      </div>
+      <button class="a-btn a-btn--primary" id="addSnsBtn">＋ SNS追加</button>
+    </div>
+    <div class="a-list" id="snsList"></div>
+  </section>
+
+</main>
+
+<footer class="a-footer">
+  <div class="a-footer__hint">
+    <strong>使い方:</strong> 編集内容は自動で保存（ブラウザ内）されます。サイトに反映するには
+    <span class="a-kbd">content.json をダウンロード</span>
+    → ダウンロードしたファイルを <code>data/content.json</code> に上書き → GitHub Desktop / ターミナルで push してください。
+  </div>
+</footer>
+
+<script src="admin.js"></script>
+</body>
+</html>

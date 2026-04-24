@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Schedule | enon Official</title>
-<meta name="description" content="enon（エノン）のライブ・イベントスケジュール。">
+<meta name="description" content="enon（エンオン）のライブ・イベントスケジュール。">
 <link rel="icon" type="image/svg+xml" href="images/logo.png">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -18,7 +18,7 @@
     <a href="news.html">News</a>
     <a href="schedule.html" class="active">Schedule</a>
   </nav>
-  <button class="menu-toggle" aria-label="menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+  <button class="menu-toggle" aria-label="menu">☰</button>
 </header>
 
 <section class="pagehead">
@@ -32,91 +32,7 @@
 <section class="section">
   <div class="section__inner">
 
-    <div class="filter-row">
-      <button class="filter-chip active">All</button>
-      <button class="filter-chip">Live</button>
-      <button class="filter-chip">Event</button>
-      <button class="filter-chip">Media</button>
-    </div>
-
-    <!-- 2026 / 4 -->
-    <h3 style="font-family:'Unbounded',sans-serif;font-size:14px;letter-spacing:.3em;color:var(--text-dim);margin:10px 0 18px">2026 / APRIL</h3>
-    <div class="schedule-list">
-      <div class="schedule-row">
-        <div class="schedule-row__date"><span class="m">APR</span><span class="d">29</span><span class="w">WED</span></div>
-        <div>
-          <div class="schedule-row__title">enon 1st contact – Debut Live –</div>
-          <div class="schedule-row__meta">渋谷 Garret / OPEN 18:30 / START 19:00 / ADV ¥3,500</div>
-        </div>
-        <a class="schedule-row__cta debut" href="#">Ticket →</a>
-      </div>
-    </div>
-
-    <!-- 2026 / 5 -->
-    <h3 style="font-family:'Unbounded',sans-serif;font-size:14px;letter-spacing:.3em;color:var(--text-dim);margin:40px 0 18px">2026 / MAY</h3>
-    <div class="schedule-list">
-      <div class="schedule-row">
-        <div class="schedule-row__date"><span class="m">MAY</span><span class="d">03</span><span class="w">SUN</span></div>
-        <div>
-          <div class="schedule-row__title">enon 無料お披露目ミニライブ</div>
-          <div class="schedule-row__meta">渋谷モディ前 特設ステージ / 13:00 ~ / 入場無料</div>
-        </div>
-        <a class="schedule-row__cta" href="#">Info →</a>
-      </div>
-      <div class="schedule-row">
-        <div class="schedule-row__date"><span class="m">MAY</span><span class="d">17</span><span class="w">SUN</span></div>
-        <div>
-          <div class="schedule-row__title">IDOL NEXT WAVE vol.12 出演</div>
-          <div class="schedule-row__meta">新宿 LOFT / 対バンイベント / 6組出演予定</div>
-        </div>
-        <a class="schedule-row__cta" href="#">Ticket →</a>
-      </div>
-      <div class="schedule-row">
-        <div class="schedule-row__date"><span class="m">MAY</span><span class="d">24</span><span class="w">SUN</span></div>
-        <div>
-          <div class="schedule-row__title">FM NACK5「IDOL CONNECT」ゲスト生出演</div>
-          <div class="schedule-row__meta">月詠ほのか・一ノ瀬ゆな 出演 / 22:00 ON AIR</div>
-        </div>
-        <a class="schedule-row__cta" href="#">Media →</a>
-      </div>
-      <div class="schedule-row">
-        <div class="schedule-row__date"><span class="m">MAY</span><span class="d">31</span><span class="w">SUN</span></div>
-        <div>
-          <div class="schedule-row__title">特典会&ミニライブ @ タワーレコード渋谷</div>
-          <div class="schedule-row__meta">15:00 ~ / CD購入者対象イベント</div>
-        </div>
-        <a class="schedule-row__cta" href="#">Info →</a>
-      </div>
-    </div>
-
-    <!-- 2026 / 6 -->
-    <h3 style="font-family:'Unbounded',sans-serif;font-size:14px;letter-spacing:.3em;color:var(--text-dim);margin:40px 0 18px">2026 / JUNE</h3>
-    <div class="schedule-list">
-      <div class="schedule-row">
-        <div class="schedule-row__date"><span class="m">JUN</span><span class="d">07</span><span class="w">SUN</span></div>
-        <div>
-          <div class="schedule-row__title">enon 1st one-man「En」</div>
-          <div class="schedule-row__meta">渋谷 WWW X / OPEN 17:00 / START 18:00 / ADV ¥4,800</div>
-        </div>
-        <a class="schedule-row__cta debut" href="#">Ticket →</a>
-      </div>
-      <div class="schedule-row">
-        <div class="schedule-row__date"><span class="m">JUN</span><span class="d">21</span><span class="w">SUN</span></div>
-        <div>
-          <div class="schedule-row__title">TOKYO IDOL SUMMER FES 2026 出演</div>
-          <div class="schedule-row__meta">豊洲PIT / 大型フェス出演決定</div>
-        </div>
-        <a class="schedule-row__cta" href="#">Ticket →</a>
-      </div>
-      <div class="schedule-row">
-        <div class="schedule-row__date"><span class="m">JUN</span><span class="d">28</span><span class="w">SUN</span></div>
-        <div>
-          <div class="schedule-row__title">enon 定期公演 Vol.01</div>
-          <div class="schedule-row__meta">下北沢 SHELTER / START 19:00</div>
-        </div>
-        <a class="schedule-row__cta" href="#">Info →</a>
-      </div>
-    </div>
+    <div data-slot="scheduleFull"></div>
 
     <div style="margin-top:60px;text-align:center;color:var(--text-dim);font-size:12px;letter-spacing:.2em">
       ※ チケット・出演情報は変更となる場合があります。最新情報はSNSおよびNewsをご確認ください。
@@ -137,14 +53,11 @@
     </nav>
   </div>
   <div class="site-footer__bottom">
-    <span>© 2026 enon. All Rights Reserved.</span>
-    <span>Debut : 2026.04.29 @ Shibuya Garret</span>
+    <span data-slot="copyright">© 2026 enon. All Rights Reserved.</span>
+    <span data-slot="debutLine">Debut : 2026.04.29 @ Shibuya Garret</span>
   </div>
 </footer>
 
-<script>
-  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.1});
-  document.querySelectorAll('.schedule-row').forEach(el=>{el.classList.add('reveal');io.observe(el)});
-</script>
+<script src="js/site.js"></script>
 </body>
 </html>
