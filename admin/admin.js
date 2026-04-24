@@ -3,7 +3,9 @@
    ========================================================= */
 
 const DRAFT_KEY = 'enonSiteDraft';
+const SETTINGS_KEY = 'enonAdminSettings';
 const DATA_URL = '../data/content.json';
+const CONTENT_PATH = 'data/content.json';
 
 const COLOR_OPTIONS = [
   { var:'--c-honoka', en:'WHITE',   jp:'ホワイト' },
@@ -316,7 +318,7 @@ function bindTopActions() {
   document.getElementById('downloadBtn').onclick = () => {
     const text = JSON.stringify(state, null, 2);
     download('content.json', text);
-    setStatus('content.json をダウンロードしました。data/content.json に上書きしてpushしてください。', 'ok');
+    setStatus('content.json をダウンロードしました', 'ok');
   };
 
   document.getElementById('previewBtn').onclick = () => {
@@ -325,12 +327,12 @@ function bindTopActions() {
   };
 
   document.getElementById('loadFromFileBtn').onclick = async () => {
-    if (!confirm('サーバー上のcontent.jsonを再読み込みします。現在の編集内容は失われます。よろしいですか？')) return;
+    if (!confirm('公開中のcontent.jsonを再読み込みします。編集中の内容は失われます。よろしいですか？')) return;
     try {
       state = await fetchSiteContent();
       save();
       renderAll();
-      setStatus('サーバーから再読み込みしました', 'ok');
+      setStatus('公開版を再読み込みしました', 'ok');
     } catch (e) {
       setStatus('読み込みに失敗: ' + e.message, 'err');
     }
@@ -355,6 +357,145 @@ function bindTopActions() {
     rd.readAsText(f);
     importFile.value = '';
   };
+
+  document.getElementById('publishBtn').onclick = publishToGitHub;
+}
+
+// ---------- GitHub settings ----------
+function loadSettings() {
+  try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; }
+  catch { return {}; }
+}
+function saveSettings(s) {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+}
+
+function autoDetectRepo() {
+  // from github.io URL: https://<owner>.github.io/<repo>/admin/
+  const h = location.hostname;
+  const m = h.match(/^([^.]+)\.github\.io$/);
+  if (m) {
+    const path = location.pathname.split('/').filter(Boolean);
+    if (path.length >= 1) return { owner: m[1], repo: path[0] };
+  }
+  return null;
+}
+
+function renderSettingsInputs() {
+  const s = loadSettings();
+  const detected = autoDetectRepo();
+  const ownerEl = document.getElementById('gh-owner');
+  const repoEl = document.getElementById('gh-repo');
+  const branchEl = document.getElementById('gh-branch');
+  const tokenEl = document.getElementById('gh-token');
+  ownerEl.value = s.owner ?? detected?.owner ?? '';
+  repoEl.value = s.repo ?? detected?.repo ?? '';
+  branchEl.value = s.branch ?? 'main';
+  tokenEl.value = s.token ?? '';
+}
+
+function bindSettingsActions() {
+  renderSettingsInputs();
+
+  document.getElementById('saveSettingsBtn').onclick = () => {
+    const s = {
+      owner: document.getElementById('gh-owner').value.trim(),
+      repo: document.getElementById('gh-repo').value.trim(),
+      branch: (document.getElementById('gh-branch').value.trim() || 'main'),
+      token: document.getElementById('gh-token').value.trim()
+    };
+    saveSettings(s);
+    setStatus('接続設定を保存しました', 'ok');
+  };
+
+  document.getElementById('testConnBtn').onclick = async () => {
+    const s = loadSettings();
+    if (!s.token) { setStatus('Tokenを入力して保存してください', 'err'); return; }
+    setStatus('接続中...', '');
+    try {
+      const res = await fetch(`https://api.github.com/repos/${s.owner}/${s.repo}`, {
+        headers: { Authorization: `token ${s.token}`, Accept: 'application/vnd.github+json' }
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status} - ${(await res.json()).message || ''}`);
+      const info = await res.json();
+      setStatus(`✓ 接続成功: ${info.full_name} (${info.private ? 'private' : 'public'})`, 'ok');
+    } catch (e) {
+      setStatus('接続失敗: ' + e.message, 'err');
+    }
+  };
+
+  document.getElementById('clearTokenBtn').onclick = () => {
+    if (!confirm('Tokenを削除します。よろしいですか？')) return;
+    const s = loadSettings();
+    delete s.token;
+    saveSettings(s);
+    document.getElementById('gh-token').value = '';
+    setStatus('Tokenを削除しました', 'ok');
+  };
+
+  const showChk = document.getElementById('gh-showToken');
+  const tokenInp = document.getElementById('gh-token');
+  showChk.onchange = () => tokenInp.type = showChk.checked ? 'text' : 'password';
+}
+
+// ---------- Publish directly to GitHub ----------
+async function publishToGitHub() {
+  const s = loadSettings();
+  if (!s.owner || !s.repo || !s.token) {
+    setStatus('接続設定が未完了です。「⚙ 接続設定」タブで入力してください。', 'err');
+    document.querySelector('.a-tab[data-tab="settings"]').click();
+    return;
+  }
+
+  const msg = prompt('コミットメッセージを入力してください', 'Update site content via admin');
+  if (!msg) return;
+
+  setStatus('GitHubに公開中...', '');
+  try {
+    const apiBase = `https://api.github.com/repos/${s.owner}/${s.repo}/contents/${CONTENT_PATH}`;
+
+    // 1) get current SHA (if file exists)
+    let sha = null;
+    const cur = await fetch(`${apiBase}?ref=${encodeURIComponent(s.branch)}`, {
+      headers: { Authorization: `token ${s.token}`, Accept:'application/vnd.github+json' }
+    });
+    if (cur.ok) {
+      const j = await cur.json();
+      sha = j.sha;
+    } else if (cur.status !== 404) {
+      throw new Error(`取得失敗: HTTP ${cur.status} - ${(await cur.json()).message || ''}`);
+    }
+
+    // 2) build payload
+    const json = JSON.stringify(state, null, 2);
+    const b64 = utf8ToBase64(json);
+
+    const body = { message: msg, content: b64, branch: s.branch };
+    if (sha) body.sha = sha;
+
+    // 3) PUT
+    const res = await fetch(apiBase, {
+      method: 'PUT',
+      headers: { Authorization: `token ${s.token}`, 'Content-Type':'application/json', Accept:'application/vnd.github+json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      throw new Error(`HTTP ${res.status} - ${j.message || ''}`);
+    }
+    const result = await res.json();
+    setStatus(`✓ 公開成功: commit ${result.commit.sha.slice(0,7)} — 数十秒後にサイトに反映されます`, 'ok');
+  } catch (e) {
+    setStatus('公開失敗: ' + e.message, 'err');
+  }
+}
+
+function utf8ToBase64(str) {
+  // handle UTF-8 safely (including Japanese)
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin);
 }
 
 // ---------- tabs ----------
@@ -381,6 +522,7 @@ function esc(s) {
   bindTabs();
   bindAddButtons();
   bindTopActions();
+  bindSettingsActions();
 
   // prefer draft; if none, fetch server
   const draft = loadDraft();

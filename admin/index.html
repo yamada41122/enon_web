@@ -19,10 +19,11 @@
     </div>
   </div>
   <div class="a-header__actions">
-    <button class="a-btn a-btn--ghost" id="loadFromFileBtn">サーバーから再読み込み</button>
-    <button class="a-btn a-btn--ghost" id="importBtn">JSON読み込み</button>
+    <button class="a-btn a-btn--ghost" id="loadFromFileBtn" title="公開中のcontent.jsonに戻す">再読み込み</button>
+    <button class="a-btn a-btn--ghost" id="importBtn" title="JSONファイルを読み込む">JSON読み込み</button>
     <button class="a-btn a-btn--ghost" id="previewBtn">プレビュー</button>
-    <button class="a-btn a-btn--primary" id="downloadBtn">content.json をダウンロード</button>
+    <button class="a-btn a-btn--ghost" id="downloadBtn" title="content.jsonをダウンロード">ダウンロード</button>
+    <button class="a-btn a-btn--primary" id="publishBtn">🚀 サイトに公開</button>
     <input type="file" id="importFile" accept=".json,application/json" hidden>
   </div>
 </header>
@@ -36,6 +37,7 @@
   <button class="a-tab" data-tab="schedule">Schedule</button>
   <button class="a-tab" data-tab="gallery">Gallery</button>
   <button class="a-tab" data-tab="sns">SNS</button>
+  <button class="a-tab" data-tab="settings">⚙ 接続設定</button>
 </nav>
 
 <main class="a-main">
@@ -136,13 +138,62 @@
     <div class="a-list" id="snsList"></div>
   </section>
 
+  <!-- SETTINGS -->
+  <section class="a-pane" data-pane="settings">
+    <h2 class="a-pane__title">⚙ GitHub 接続設定</h2>
+    <p class="a-pane__desc">「🚀 サイトに公開」ボタンで、編集内容を直接GitHubにコミットするための設定です。Tokenはこのブラウザ内にのみ保存され、外部には送信されません。</p>
+
+    <div class="a-grid" style="margin-bottom:20px">
+      <label class="a-field">
+        <span>GitHub Username</span>
+        <input type="text" id="gh-owner" placeholder="yamada41122">
+      </label>
+      <label class="a-field">
+        <span>Repository Name</span>
+        <input type="text" id="gh-repo" placeholder="enon_web">
+      </label>
+      <label class="a-field">
+        <span>Branch</span>
+        <input type="text" id="gh-branch" placeholder="main">
+      </label>
+      <label class="a-field">
+        <span>Personal Access Token (PAT)</span>
+        <input type="password" id="gh-token" placeholder="github_pat_... または ghp_..." autocomplete="off">
+      </label>
+      <div class="a-field a-field--wide" style="flex-direction:row;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="a-btn a-btn--primary" id="saveSettingsBtn">設定を保存</button>
+        <button class="a-btn a-btn--ghost" id="testConnBtn">接続テスト</button>
+        <button class="a-btn a-btn--danger" id="clearTokenBtn">Tokenを削除</button>
+        <label style="display:inline-flex;gap:6px;align-items:center;font-size:12px;color:var(--a-text-dim)">
+          <input type="checkbox" id="gh-showToken"> Tokenを表示
+        </label>
+      </div>
+    </div>
+
+    <div style="background:var(--a-panel);border:1px solid var(--a-line);border-radius:10px;padding:22px;line-height:1.9">
+      <h3 style="font-family:'Unbounded',sans-serif;font-size:14px;letter-spacing:.15em;margin-bottom:12px;color:var(--a-accent)">📘 Personal Access Tokenの作成手順</h3>
+      <ol style="padding-left:20px;color:var(--a-text-dim);font-size:13px">
+        <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Fine-grained Personal Access Token 発行ページ</a>を開く</li>
+        <li><strong>Token name</strong>: <code>enon-admin</code> など</li>
+        <li><strong>Expiration</strong>: 90日など任意</li>
+        <li><strong>Repository access</strong>: <code>Only select repositories</code> → <code>enon_web</code> を選択</li>
+        <li><strong>Permissions</strong> → <strong>Repository permissions</strong> で <code>Contents</code> を <code>Read and write</code> に設定</li>
+        <li><strong>Generate token</strong> → 表示された <code>github_pat_...</code> をコピーして上の欄に貼り付け</li>
+        <li>「設定を保存」→「接続テスト」で確認</li>
+      </ol>
+      <p style="margin-top:14px;font-size:12px;color:var(--a-text-dim)">
+        <strong>🔒 セキュリティ:</strong> Tokenはお使いのブラウザのlocalStorageにのみ保存されます。他人と共有しているPCでは使用後に「Tokenを削除」を押してください。
+      </p>
+    </div>
+  </section>
+
 </main>
 
 <footer class="a-footer">
   <div class="a-footer__hint">
-    <strong>使い方:</strong> 編集内容は自動で保存（ブラウザ内）されます。サイトに反映するには
-    <span class="a-kbd">content.json をダウンロード</span>
-    → ダウンロードしたファイルを <code>data/content.json</code> に上書き → GitHub Desktop / ターミナルで push してください。
+    <strong>使い方:</strong> 編集内容は自動で保存（ブラウザ内）されます。
+    <span class="a-kbd">🚀 サイトに公開</span> ボタンで直接GitHubにコミット → 数十秒〜数分で本番サイトに反映されます。
+    ダウンロード/アップロード方式でもOKです。
   </div>
 </footer>
 
