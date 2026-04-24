@@ -148,7 +148,7 @@ function newsCardHTML(n,i) {
       </div>
     </div>
     <div class="a-card__grid a-card__grid--4">
-      <label class="a-card__field"><span>ID (詳細URLに使用)</span><input data-k="id" value="${esc(n.id||'')}" readonly title="自動生成されるIDです。変更するとシェアされたリンクが無効になります"></label>
+      <label class="a-card__field"><span>ID (詳細URLに使用 / 半角英数・ハイフン)</span><input data-k="id" data-news-id-input value="${esc(n.id||'')}" title="任意の英数字に変更できます。変更すると既存のシェアリンクが無効になります"></label>
       <label class="a-card__field"><span>日付 (YYYY.MM.DD)</span><input data-k="date" value="${esc(n.date||'')}"></label>
       <label class="a-card__field"><span>カテゴリ</span><select data-k="category">${catOpts}</select></label>
       <label class="a-card__field a-card__field--wide"><span>タイトル</span><input data-k="title" value="${esc(n.title||'')}"></label>
@@ -329,8 +329,8 @@ function bindListHandlers(key) {
             setStatus('画像ファイルを選んでください', 'err');
             return;
           }
-          if (file.size > 20 * 1024 * 1024) {
-            setStatus('ファイルが大きすぎます（20MB以下にしてください）', 'err');
+          if (file.size > 50 * 1024 * 1024) {
+            setStatus('ファイルが大きすぎます（50MB以下にしてください）', 'err');
             return;
           }
           try {
@@ -358,8 +358,26 @@ function bindListHandlers(key) {
       }
     }
 
-    // news-specific: image upload and clear
+    // news-specific: image upload, id sanitization
     if (key === 'news') {
+      // sanitize ID on blur (keep URL-safe: alphanumeric, dash, underscore)
+      const idInput = card.querySelector('[data-news-id-input]');
+      if (idInput) {
+        idInput.addEventListener('blur', () => {
+          let v = (idInput.value || '').trim().toLowerCase();
+          v = v.replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+          if (!v) {
+            const safeDate = (state.news[idx].date || '').replace(/\D/g, '') || String(Date.now());
+            v = `news-${safeDate}-${Math.random().toString(36).slice(2,6)}`;
+          }
+          // check uniqueness; append suffix if duplicate
+          const dup = state.news.some((n, i) => i !== idx && n.id === v);
+          if (dup) v = v + '-' + Math.random().toString(36).slice(2,5);
+          idInput.value = v;
+          state.news[idx].id = v;
+          save();
+        });
+      }
       const upInput = card.querySelector('[data-news-upload-idx]');
       if (upInput) {
         upInput.onchange = async (e) => {
@@ -369,8 +387,8 @@ function bindListHandlers(key) {
             setStatus('画像ファイルを選んでください', 'err');
             return;
           }
-          if (file.size > 20 * 1024 * 1024) {
-            setStatus('ファイルが大きすぎます（20MB以下にしてください）', 'err');
+          if (file.size > 50 * 1024 * 1024) {
+            setStatus('ファイルが大きすぎます（50MB以下にしてください）', 'err');
             return;
           }
           try {
