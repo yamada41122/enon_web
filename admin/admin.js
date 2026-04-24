@@ -482,7 +482,7 @@ function newNews() {
 
 // ensure every news item has a stable id (auto-generate if missing)
 function ensureNewsIds() {
-  if (!state.news) return;
+  if (!state || !state.news) return;
   state.news.forEach((n, i) => {
     if (!n.id) {
       const safeDate = (n.date || '').replace(/\D/g, '') || String(Date.now());
@@ -828,7 +828,6 @@ function bindLogin() {
 
 // ---------- boot ----------
 async function bootAdmin() {
-  ensureNewsIds();
   bindTabs();
   bindAddButtons();
   bindTopActions();
@@ -850,6 +849,10 @@ async function bootAdmin() {
       state = { group:{}, members:[], news:[], schedule:[], gallery:[], sns:[] };
     }
   }
+
+  // normalize: ensure news entries have IDs (migrations for old drafts)
+  ensureNewsIds();
+  save();
 
   renderAll();
 }
