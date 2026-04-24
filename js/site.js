@@ -171,9 +171,12 @@ function renderGallery(gallery, el) {
 
 function renderSns(sns, el) {
   if (!el) return;
-  el.innerHTML = sns.map(s => `
-    <a class="sns-link" href="${esc(s.url || '#')}">${esc(s.label)}</a>
-  `).join('');
+  el.innerHTML = sns.map(s => {
+    const url = s.url || '#';
+    const external = /^https?:\/\//.test(url);
+    const attrs = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+    return `<a class="sns-link" href="${esc(url)}"${attrs}>${esc(s.label)}</a>`;
+  }).join('');
 }
 
 function renderFooterCopy(group) {

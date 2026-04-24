@@ -176,23 +176,7 @@
   "sns": [
     {
       "label": "× / Twitter",
-      "url": "#"
-    },
-    {
-      "label": "◎ / Instagram",
-      "url": "#"
-    },
-    {
-      "label": "▶ / YouTube",
-      "url": "#"
-    },
-    {
-      "label": "♪ / TikTok",
-      "url": "#"
-    },
-    {
-      "label": "◇ / Fanclub",
-      "url": "#"
+      "url": "https://x.com/enon_idol"
     }
   ]
 }
