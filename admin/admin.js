@@ -174,7 +174,7 @@ function newsCardHTML(n,i) {
       </div>
     </div>
     <label class="a-card__field" style="margin-top:14px">
-      <span>本文（改行あり、段落は空行で区切る）</span>
+      <span>本文（改行あり、段落は空行で区切る / Google Maps・YouTube等の &lt;iframe&gt; 埋め込みコード貼り付け可）</span>
       <textarea data-k="body" rows="8" style="min-height:180px">${esc(n.body||'')}</textarea>
     </label>
   </div>`;

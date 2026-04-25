@@ -110,15 +110,68 @@ function renderNewsList(news, el, limit) {
   }).join('');
 }
 
+// Trusted iframe src prefixes for embeds (Google Maps, YouTube, etc.)
+const TRUSTED_EMBED_PREFIXES = [
+  'https://www.google.com/maps/embed',
+  'https://maps.google.com/maps?',
+  'https://www.google.com/maps?',
+  'https://www.youtube.com/embed/',
+  'https://www.youtube-nocookie.com/embed/',
+  'https://player.vimeo.com/video/',
+  'https://w.soundcloud.com/player/',
+  'https://open.spotify.com/embed/',
+  'https://embed.music.apple.com/',
+  'https://platform.twitter.com/embed/',
+  'https://www.instagram.com/p/'
+];
+
+function isSafeEmbedSrc(src) {
+  return TRUSTED_EMBED_PREFIXES.some(prefix => src.startsWith(prefix));
+}
+
+function wrapIframe(iframeHtml) {
+  // extract dimensions to compute aspect-ratio
+  const wMatch = iframeHtml.match(/\bwidth\s*=\s*["']?(\d+)/i);
+  const hMatch = iframeHtml.match(/\bheight\s*=\s*["']?(\d+)/i);
+  let aspect = '16 / 9';
+  if (wMatch && hMatch) {
+    const w = parseInt(wMatch[1], 10);
+    const h = parseInt(hMatch[1], 10);
+    if (w > 0 && h > 0) aspect = `${w} / ${h}`;
+  }
+  // strip width/height attrs so CSS can size responsively
+  let cleaned = iframeHtml
+    .replace(/\b(width|height)\s*=\s*["']?[^\s"'>]+["']?/gi, '')
+    .replace(/\bstyle\s*=\s*"[^"]*"/gi, '')
+    .replace(/\bstyle\s*=\s*'[^']*'/gi, '');
+  // ensure loading=lazy
+  if (!/\bloading=/.test(cleaned)) {
+    cleaned = cleaned.replace(/<iframe\b/i, '<iframe loading="lazy"');
+  }
+  return `<div class="news-embed" style="aspect-ratio:${aspect}">${cleaned}</div>`;
+}
+
 function formatBody(body) {
   if (!body) return '';
-  // escape HTML first
-  const escaped = esc(body);
-  // detect URLs and wrap them as clickable links (open in new tab)
-  // exclude Japanese characters so URLs followed immediately by Japanese text are detected correctly
+
+  // 1) extract iframes from trusted sources, replace with placeholder so they survive escaping
+  const iframes = [];
+  const PLACE = (i) => `__ENONEMBED${i}__`;
+  let work = body.replace(/<iframe\b[\s\S]*?<\/iframe>/gi, (m) => {
+    const srcMatch = m.match(/\bsrc\s*=\s*["']([^"']+)["']/i);
+    if (srcMatch && isSafeEmbedSrc(srcMatch[1])) {
+      iframes.push(wrapIframe(m));
+      return PLACE(iframes.length - 1);
+    }
+    return ''; // drop untrusted iframes
+  });
+
+  // 2) escape HTML for everything else
+  let escaped = esc(work);
+
+  // 3) detect URLs and wrap them as clickable links (open in new tab)
   const URL_RE = /(https?:\/\/[^\s<>"'、。「」（）\u3000-\u9FFF\uFF00-\uFFEF]+)/g;
   const linkified = escaped.replace(URL_RE, (m) => {
-    // strip trailing punctuation that's likely sentence terminator, not part of URL
     const trailMatch = m.match(/[.,;:!?)）]+$/);
     let url = m;
     let trail = '';
@@ -128,9 +181,20 @@ function formatBody(body) {
     }
     return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>${trail}`;
   });
-  // convert double newlines to paragraphs, single newlines to <br>
+
+  // 4) convert double newlines to paragraphs, single newlines to <br>
   const paragraphs = linkified.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`);
-  return paragraphs.join('');
+  let result = paragraphs.join('');
+
+  // 5) restore iframes
+  iframes.forEach((html, i) => {
+    result = result.replace(PLACE(i), html);
+  });
+
+  // 6) cleanup: <p> cannot contain block-level <div>, so unwrap p>embed
+  result = result.replace(/<p>\s*(<div class="news-embed"[\s\S]*?<\/div>)\s*<\/p>/gi, '$1');
+
+  return result;
 }
 
 function renderNewsDetail(news, el) {
