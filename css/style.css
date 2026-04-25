@@ -378,6 +378,114 @@ body::after{
   .schedule-row__date .d{font-size:30px}
 }
 
+/* ---------- Schedule calendar (top page) ---------- */
+.schedule-calendar{margin-top:32px}
+.schedule-cal{
+  border:1px solid var(--line);border-radius:8px;overflow:hidden;
+  background:var(--panel);
+}
+.schedule-cal__head{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  padding:14px 18px;border-bottom:1px solid var(--line);gap:12px;
+}
+.schedule-cal__nav{display:flex;gap:8px}
+.schedule-cal__btn{
+  background:transparent;border:1px solid var(--line);color:var(--text);
+  padding:6px 14px;border-radius:999px;
+  font-family:'Unbounded',sans-serif;font-size:11px;letter-spacing:.18em;
+  cursor:pointer;transition:border-color .25s,background .25s,color .25s;
+  min-width:36px;line-height:1;
+}
+.schedule-cal__btn:hover{border-color:var(--text);background:rgba(255,255,255,.04)}
+.schedule-cal__btn--today{letter-spacing:.1em}
+.schedule-cal__title{
+  font-family:'Unbounded',sans-serif;font-size:clamp(14px,1.6vw,18px);
+  letter-spacing:.12em;text-align:center;font-weight:600;
+}
+.schedule-cal__count{
+  font-family:'Unbounded',sans-serif;font-size:11px;letter-spacing:.15em;
+  color:var(--text-dim);text-align:right;
+}
+.schedule-cal__weekdays{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.02);
+}
+.schedule-cal__wd{
+  padding:10px;text-align:center;
+  font-family:'Unbounded',sans-serif;font-size:11px;letter-spacing:.2em;
+  color:var(--text-dim);
+}
+.schedule-cal__wd.is-sun{color:#ff7a8a}
+.schedule-cal__wd.is-sat{color:var(--c-fuwari)}
+
+.schedule-cal__grid{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  grid-auto-rows:minmax(86px,auto);
+}
+.schedule-cal__cell{
+  border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:6px 6px 8px;
+  display:flex;flex-direction:column;gap:4px;
+  position:relative;
+}
+.schedule-cal__cell:nth-child(7n){border-right:0}
+.schedule-cal__cell:nth-last-child(-n+7){border-bottom:0}
+.schedule-cal__date{
+  font-family:'Unbounded',sans-serif;font-size:13px;letter-spacing:.05em;
+  color:var(--text);line-height:1.2;
+}
+.schedule-cal__cell.is-sun .schedule-cal__date{color:#ff7a8a}
+.schedule-cal__cell.is-sat .schedule-cal__date{color:var(--c-fuwari)}
+.schedule-cal__cell.is-outside .schedule-cal__date{color:rgba(255,255,255,.18)}
+.schedule-cal__cell.is-outside .schedule-cal__event{opacity:.35}
+.schedule-cal__cell.is-today{
+  background:linear-gradient(180deg, rgba(79,209,255,.08), transparent 70%);
+}
+.schedule-cal__cell.is-today .schedule-cal__date{
+  color:var(--c-fuwari);font-weight:700;
+}
+.schedule-cal__events{display:flex;flex-direction:column;gap:3px}
+.schedule-cal__event{
+  font-size:11px;line-height:1.3;
+  padding:3px 7px;border-radius:3px;
+  background:rgba(79,209,255,.16);color:var(--text);
+  border-left:2px solid var(--c-fuwari);
+  text-decoration:none;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  letter-spacing:.02em;
+  transition:background .25s, transform .25s;
+}
+.schedule-cal__event:hover{
+  background:rgba(79,209,255,.32);transform:translateX(2px);opacity:1;
+}
+.schedule-cal__event.is-debut{
+  background:rgba(255,122,182,.22);
+  border-left-color:var(--c-yuna);
+  color:#fff;font-weight:500;
+}
+.schedule-cal__event.is-debut:hover{background:rgba(255,122,182,.4)}
+
+/* mobile */
+@media (max-width:720px){
+  .schedule-cal__head{padding:12px 10px;grid-template-columns:auto 1fr auto}
+  .schedule-cal__count{display:none}
+  .schedule-cal__title{font-size:14px}
+  .schedule-cal__btn{padding:5px 10px;font-size:10px}
+  .schedule-cal__grid{grid-auto-rows:minmax(60px,auto)}
+  .schedule-cal__cell{padding:4px 3px;gap:2px}
+  .schedule-cal__date{font-size:11px}
+  .schedule-cal__event{
+    font-size:0;padding:2px 4px;border-left-width:0;
+    border-radius:6px;line-height:1;
+  }
+  .schedule-cal__event::before{
+    content:"";display:block;width:100%;height:4px;border-radius:2px;
+    background:var(--c-fuwari);
+  }
+  .schedule-cal__event.is-debut::before{background:var(--c-yuna)}
+}
+
 /* ---------- GALLERY / SNS ---------- */
 .sns-bar{
   display:flex;flex-wrap:wrap;justify-content:center;gap:14px;

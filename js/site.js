@@ -250,6 +250,119 @@ function renderScheduleList(schedule, el, limit) {
   `).join('');
 }
 
+// ---------- Calendar rendering ----------
+const _MONTH_TO_NUM = { JAN:0, FEB:1, MAR:2, APR:3, MAY:4, JUN:5, JUL:6, AUG:7, SEP:8, OCT:9, NOV:10, DEC:11 };
+const _WEEKDAY_LABELS = ['日','月','火','水','木','金','土'];
+
+function _eventDate(s) {
+  const m = _MONTH_TO_NUM[(s.month || '').toUpperCase()];
+  if (m === undefined) return null;
+  const y = parseInt(s.year, 10);
+  const d = parseInt(s.day, 10);
+  if (!y || !d) return null;
+  return new Date(y, m, d);
+}
+
+function _dateKey(d) {
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+function renderScheduleCalendar(schedule, el) {
+  if (!el) return;
+
+  const eventsByDate = {};
+  schedule.forEach(s => {
+    const d = _eventDate(s);
+    if (!d) return;
+    const k = _dateKey(d);
+    (eventsByDate[k] = eventsByDate[k] || []).push(s);
+  });
+
+  // determine starting view: nearest upcoming event, fallback to first event, fallback to today
+  const today = new Date(); today.setHours(0,0,0,0);
+  const allDates = schedule.map(_eventDate).filter(Boolean).sort((a,b) => a - b);
+  const startFrom = allDates.find(d => d >= today) || allDates[0] || today;
+  let viewYear = startFrom.getFullYear();
+  let viewMonth = startFrom.getMonth();
+
+  function build() {
+    const first = new Date(viewYear, viewMonth, 1);
+    const startDow = first.getDay();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const daysInPrev = new Date(viewYear, viewMonth, 0).getDate();
+
+    const cells = [];
+    for (let i = startDow - 1; i >= 0; i--) {
+      cells.push({ date: new Date(viewYear, viewMonth - 1, daysInPrev - i), outside: true });
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      cells.push({ date: new Date(viewYear, viewMonth, i), outside: false });
+    }
+    while (cells.length % 7 !== 0) {
+      const last = cells[cells.length - 1].date;
+      const next = new Date(last); next.setDate(last.getDate() + 1);
+      cells.push({ date: next, outside: true });
+    }
+    // show 6 weeks for consistent height
+    while (cells.length < 42) {
+      const last = cells[cells.length - 1].date;
+      const next = new Date(last); next.setDate(last.getDate() + 1);
+      cells.push({ date: next, outside: true });
+    }
+
+    el.innerHTML = `
+      <div class="schedule-cal">
+        <div class="schedule-cal__head">
+          <div class="schedule-cal__nav">
+            <button class="schedule-cal__btn" data-cal-action="prev" aria-label="前月">‹</button>
+            <button class="schedule-cal__btn" data-cal-action="next" aria-label="次月">›</button>
+            <button class="schedule-cal__btn schedule-cal__btn--today" data-cal-action="today">今日</button>
+          </div>
+          <div class="schedule-cal__title">${viewYear}年 ${viewMonth + 1}月</div>
+          <div class="schedule-cal__count">${allDates.filter(d => d.getFullYear() === viewYear && d.getMonth() === viewMonth).length}件</div>
+        </div>
+        <div class="schedule-cal__weekdays">
+          ${_WEEKDAY_LABELS.map((w,i) => `<div class="schedule-cal__wd${i===0?' is-sun':''}${i===6?' is-sat':''}">${w}</div>`).join('')}
+        </div>
+        <div class="schedule-cal__grid">
+          ${cells.map(c => {
+            const dow = c.date.getDay();
+            const isToday = c.date.getTime() === today.getTime();
+            const k = _dateKey(c.date);
+            const evs = eventsByDate[k] || [];
+            const evHtml = evs.map(ev => `
+              <a class="schedule-cal__event${ev.ctaType === 'debut' ? ' is-debut' : ''}" href="${esc(ev.url && ev.url !== '#' ? ev.url : 'schedule.html')}"${ev.url && /^https?:\/\//.test(ev.url) ? ' target="_blank" rel="noopener noreferrer"' : ''} title="${esc(ev.title)} — ${esc(ev.meta || '')}">${esc(ev.title)}</a>
+            `).join('');
+            return `<div class="schedule-cal__cell${c.outside ? ' is-outside' : ''}${isToday ? ' is-today' : ''}${dow===0?' is-sun':''}${dow===6?' is-sat':''}">
+              <div class="schedule-cal__date">${c.date.getDate()}</div>
+              <div class="schedule-cal__events">${evHtml}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    `;
+
+    el.querySelectorAll('[data-cal-action]').forEach(b => {
+      b.onclick = () => {
+        const a = b.dataset.calAction;
+        if (a === 'prev') {
+          viewMonth--;
+          if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+        } else if (a === 'next') {
+          viewMonth++;
+          if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+        } else if (a === 'today') {
+          viewYear = today.getFullYear();
+          viewMonth = today.getMonth();
+        }
+        build();
+      };
+    });
+  }
+
+  build();
+}
+
 function renderScheduleGrouped(schedule, el) {
   if (!el) return;
   const byMonth = {};
@@ -381,6 +494,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderMemberGrid(data.members, document.querySelector('[data-slot="memberGrid"]'));
   renderNewsList(data.news, document.querySelector('[data-slot="newsTop"]'), 4);
   renderScheduleList(data.schedule, document.querySelector('[data-slot="scheduleTop"]'), 3);
+  renderScheduleCalendar(data.schedule, document.querySelector('[data-slot="scheduleCalendar"]'));
   renderGallery(data.gallery, document.querySelector('[data-slot="gallery"]'));
   renderSns(data.sns, document.querySelector('[data-slot="sns"]'));
 
