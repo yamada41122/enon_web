@@ -333,8 +333,8 @@ function bindListHandlers(key) {
             setStatus('画像ファイルを選んでください', 'err');
             return;
           }
-          if (file.size > 50 * 1024 * 1024) {
-            setStatus('ファイルが大きすぎます（50MB以下にしてください）', 'err');
+          if (file.size > 5 * 1024 * 1024) {
+            setStatus('ファイルが大きすぎます（5MB以下にしてください）', 'err');
             return;
           }
           try {
@@ -401,8 +401,8 @@ function bindListHandlers(key) {
             setStatus('画像ファイルを選んでください', 'err');
             return;
           }
-          if (file.size > 50 * 1024 * 1024) {
-            setStatus('ファイルが大きすぎます（50MB以下にしてください）', 'err');
+          if (file.size > 5 * 1024 * 1024) {
+            setStatus('ファイルが大きすぎます（5MB以下にしてください）', 'err');
             return;
           }
           try {
