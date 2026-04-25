@@ -519,8 +519,10 @@ body::after{
   text-transform:lowercase;
 }
 .schedule-row__tag--region{
-  color:var(--text-dim);background:transparent;
-  border:1px solid var(--line-strong);
+  color:var(--text);
+  background:rgba(191,183,174,.28);
+  border:1px solid rgba(191,183,174,.55);
+  font-weight:400;
 }
 .schedule-row__tag--type{border:1px solid currentColor;background:transparent}
 .schedule-row__tag--live{color:#C28194}
