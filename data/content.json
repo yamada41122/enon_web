@@ -140,15 +140,20 @@
   ],
   "schedule": [
     {
+      "id": "event-20260429-debut",
       "year": "2026",
       "month": "APR",
       "day": "29",
       "weekday": "WED",
+      "region": "東京",
+      "type": "LIVE",
       "title": "enon 1st live – Debut Live –",
       "meta": "渋谷 Garret / OPEN 11:30 / START 12:00 / ADV ¥500+1D",
       "ctaType": "debut",
       "ctaLabel": "Ticket",
-      "url": "https://tiget.net/events/481155"
+      "url": "https://tiget.net/events/481155",
+      "image": "",
+      "body": ""
     }
   ],
   "gallery": [

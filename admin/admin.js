@@ -25,6 +25,7 @@ const GALLERY_COLORS  = ['c1','c2','c3','c4','c5','c6','c7','c8'];
 const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 const WEEKDAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
 const CTA_TYPES = [{v:'',l:'通常'},{v:'debut',l:'Debut強調'}];
+const SCHEDULE_TYPES = ['LIVE','EVENT','MEDIA'];
 
 let state = null;  // the editable content
 
@@ -192,10 +193,16 @@ function scheduleCardHTML(s,i) {
   const monOpts = MONTHS.map(m => `<option ${s.month===m?'selected':''}>${m}</option>`).join('');
   const wOpts = WEEKDAYS.map(w => `<option ${s.weekday===w?'selected':''}>${w}</option>`).join('');
   const ctaOpts = CTA_TYPES.map(c => `<option value="${c.v}" ${s.ctaType===c.v?'selected':''}>${c.l}</option>`).join('');
+  const typeOpts = SCHEDULE_TYPES.map(t => `<option ${s.type===t?'selected':''}>${t}</option>`).join('');
+  const hasImage = !!s.image;
+  const previewSrc = hasImage ? `../${esc(s.image)}` : '';
   return `
   <div class="a-card" data-index="${i}">
     <div class="a-card__head">
-      <div class="a-card__label">${esc(s.year||'')} / ${esc(s.month||'')}.${esc(s.day||'')} - ${esc((s.title||'').slice(0,40))}</div>
+      <div class="a-card__label">
+        ${s.type ? `<span class="a-card__badge ${esc((s.type||'').toLowerCase())}">${esc(s.type)}</span>` : ''}
+        ${s.region ? `[${esc(s.region)}] ` : ''}${esc(s.year||'')}/${esc(s.month||'')}.${esc(s.day||'')} - ${esc((s.title||'').slice(0,40))}
+      </div>
       <div class="a-card__actions">
         <button class="a-btn a-btn--ghost a-btn--sm" data-action="up">▲</button>
         <button class="a-btn a-btn--ghost a-btn--sm" data-action="down">▼</button>
@@ -203,16 +210,39 @@ function scheduleCardHTML(s,i) {
       </div>
     </div>
     <div class="a-card__grid a-card__grid--4">
+      <label class="a-card__field"><span>ID (詳細URL)</span><input data-k="id" data-schedule-id-input value="${esc(s.id||'')}" title="任意の英数字に変更できます"></label>
+      <label class="a-card__field"><span>地域</span><input data-k="region" value="${esc(s.region||'')}" placeholder="東京・大阪 など"></label>
+      <label class="a-card__field"><span>種類</span><select data-k="type">${typeOpts}</select></label>
       <label class="a-card__field"><span>年</span><input data-k="year" value="${esc(s.year||'')}"></label>
       <label class="a-card__field"><span>月</span><select data-k="month">${monOpts}</select></label>
       <label class="a-card__field"><span>日</span><input data-k="day" value="${esc(s.day||'')}" maxlength="2"></label>
       <label class="a-card__field"><span>曜日</span><select data-k="weekday">${wOpts}</select></label>
-      <label class="a-card__field a-card__field--wide"><span>タイトル</span><input data-k="title" value="${esc(s.title||'')}"></label>
-      <label class="a-card__field a-card__field--wide"><span>会場・補足情報</span><input data-k="meta" value="${esc(s.meta||'')}"></label>
       <label class="a-card__field"><span>ボタン種別</span><select data-k="ctaType">${ctaOpts}</select></label>
+      <label class="a-card__field a-card__field--wide"><span>タイトル</span><input data-k="title" value="${esc(s.title||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>会場・補足情報（一覧に表示）</span><input data-k="meta" value="${esc(s.meta||'')}"></label>
       <label class="a-card__field"><span>ボタンラベル</span><input data-k="ctaLabel" value="${esc(s.ctaLabel||'Info')}"></label>
-      <label class="a-card__field a-card__field--wide"><span>リンクURL</span><input data-k="url" value="${esc(s.url||'#')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>リンクURL（チケット販売など）</span><input data-k="url" value="${esc(s.url||'#')}"></label>
     </div>
+    <div class="a-gallery-row" style="margin-top:14px">
+      <div class="a-gallery-preview${hasImage ? '' : ' a-gallery-preview--empty'}">
+        ${hasImage ? `<img src="${previewSrc}" alt="" onerror="this.style.display='none';this.parentElement.classList.add('a-gallery-preview--err');this.parentElement.dataset.err='画像が見つかりません'">` : '<span>画像なし</span>'}
+      </div>
+      <div class="a-gallery-fields">
+        <label class="a-card__field"><span>画像パス（直接編集可）</span><input data-k="image" value="${esc(s.image||'')}" placeholder="images/schedule/photo.jpg"></label>
+        <div class="a-card__field">
+          <span>詳細ページの画像をアップロード</span>
+          <div class="a-upload">
+            <input type="file" accept="image/*" id="schedule-upload-${i}" data-schedule-upload-idx="${i}">
+            <label for="schedule-upload-${i}" class="a-btn a-btn--ghost a-btn--sm">📁 ファイルを選ぶ</label>
+            ${hasImage ? `<button type="button" class="a-btn a-btn--danger a-btn--sm" data-schedule-clear-image="${i}">画像をクリア</button>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+    <label class="a-card__field" style="margin-top:14px">
+      <span>本文（改行あり、段落は空行で区切る / Google Maps・YouTube等の &lt;iframe&gt; 埋め込みコード貼り付け可）</span>
+      <textarea data-k="body" rows="8" style="min-height:180px">${esc(s.body||'')}</textarea>
+    </label>
   </div>`;
 }
 
@@ -357,6 +387,65 @@ function bindListHandlers(key) {
           state.gallery[idx].image = '';
           save();
           renderGallery();
+          setStatus('画像をクリアしました', 'ok');
+        };
+      }
+    }
+
+    // schedule-specific: image upload, id sanitization
+    if (key === 'schedule') {
+      // sanitize ID on blur
+      const idInput = card.querySelector('[data-schedule-id-input]');
+      if (idInput) {
+        idInput.addEventListener('blur', () => {
+          let v = (idInput.value || '').trim().toLowerCase();
+          v = v.replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+          if (!v) {
+            const s = state.schedule[idx];
+            const safeDate = `${s.year || ''}${s.month || ''}${s.day || ''}`.replace(/\W/g, '') || String(Date.now());
+            v = `event-${safeDate}-${Math.random().toString(36).slice(2,6)}`;
+          }
+          const dup = state.schedule.some((n, i) => i !== idx && n.id === v);
+          if (dup) v = v + '-' + Math.random().toString(36).slice(2,5);
+          idInput.value = v;
+          state.schedule[idx].id = v;
+          save();
+        });
+      }
+      // image upload
+      const upInput = card.querySelector('[data-schedule-upload-idx]');
+      if (upInput) {
+        upInput.onchange = async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          if (!file.type.startsWith('image/')) {
+            setStatus('画像ファイルを選んでください', 'err');
+            return;
+          }
+          if (file.size > 5 * 1024 * 1024) {
+            setStatus('ファイルが大きすぎます（5MB以下にしてください）', 'err');
+            return;
+          }
+          try {
+            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB)...`, '');
+            const path = await uploadImageToGitHub(file, 'schedule');
+            state.schedule[idx].image = path;
+            save();
+            renderSchedule();
+            setStatus(`✓ 画像アップロード成功: ${path}`, 'ok');
+          } catch (err) {
+            setStatus('アップロード失敗: ' + err.message, 'err');
+          }
+          e.target.value = '';
+        };
+      }
+      const clearBtn = card.querySelector('[data-schedule-clear-image]');
+      if (clearBtn) {
+        clearBtn.onclick = () => {
+          if (!confirm('画像の関連付けをクリアしますか？（GitHub上のファイルは残ります）')) return;
+          state.schedule[idx].image = '';
+          save();
+          renderSchedule();
           setStatus('画像をクリアしました', 'ok');
         };
       }
@@ -523,7 +612,26 @@ function ensureNewsIds() {
   });
 }
 function newSchedule() {
-  return { year:'2026', month:'APR', day:'01', weekday:'MON', title:'新しい予定', meta:'会場名 / 時間', ctaType:'', ctaLabel:'Info', url:'#' };
+  const ts = Date.now();
+  return {
+    id: `event-${ts}-${Math.random().toString(36).slice(2,6)}`,
+    year:'2026', month:'APR', day:'01', weekday:'MON',
+    region: '東京', type: 'LIVE',
+    title:'新しい予定', meta:'会場名 / 時間',
+    ctaType:'', ctaLabel:'Info', url:'#',
+    image:'', body:''
+  };
+}
+
+// auto-generate ID for schedule items missing one (migration for older content.json)
+function ensureScheduleIds() {
+  if (!state || !state.schedule) return;
+  state.schedule.forEach(s => {
+    if (!s.id) {
+      const safeDate = `${s.year || ''}${s.month || ''}${s.day || ''}`.replace(/\W/g, '') || String(Date.now());
+      s.id = `event-${safeDate}-${Math.random().toString(36).slice(2,6)}`;
+    }
+  });
 }
 function newGallery() {
   const used = (state.gallery||[]).map(g=>g.color);
@@ -890,8 +998,9 @@ async function bootAdmin() {
     }
   }
 
-  // normalize: ensure news entries have IDs and sort by date desc
+  // normalize: ensure news/schedule entries have IDs and sort news by date desc
   ensureNewsIds();
+  ensureScheduleIds();
   sortNewsByDateDesc();
   save();
 

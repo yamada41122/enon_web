@@ -231,23 +231,33 @@ function categoryLabel(cat) {
   return ({ live:'Live', media:'Media', info:'Info', goods:'Goods' })[cat] || cat;
 }
 
+function scheduleTagsHTML(s) {
+  const region = s.region ? `<span class="schedule-row__tag schedule-row__tag--region">${esc(s.region)}</span>` : '';
+  const type = s.type ? `<span class="schedule-row__tag schedule-row__tag--type schedule-row__tag--${esc((s.type || '').toLowerCase())}">${esc(s.type)}</span>` : '';
+  return region + type;
+}
+
+function scheduleRowHTML(s) {
+  const detailUrl = s.id ? `schedule-detail.html?id=${encodeURIComponent(s.id)}` : 'schedule.html';
+  return `<a class="schedule-row schedule-row--link" href="${esc(detailUrl)}">
+    <div class="schedule-row__date">
+      <span class="m">${esc(s.month)}</span>
+      <span class="d">${esc(s.day)}</span>
+      <span class="w">${esc(s.weekday)}</span>
+    </div>
+    <div class="schedule-row__body">
+      <div class="schedule-row__tags">${scheduleTagsHTML(s)}</div>
+      <div class="schedule-row__title">${esc(s.title)}</div>
+      <div class="schedule-row__meta">${esc(s.meta || '')}</div>
+    </div>
+    <span class="schedule-row__cta ${s.ctaType ? esc(s.ctaType) : ''}">詳細 →</span>
+  </a>`;
+}
+
 function renderScheduleList(schedule, el, limit) {
   if (!el) return;
   const items = limit ? schedule.slice(0, limit) : schedule;
-  el.innerHTML = items.map(s => `
-    <div class="schedule-row">
-      <div class="schedule-row__date">
-        <span class="m">${esc(s.month)}</span>
-        <span class="d">${esc(s.day)}</span>
-        <span class="w">${esc(s.weekday)}</span>
-      </div>
-      <div>
-        <div class="schedule-row__title">${esc(s.title)}</div>
-        <div class="schedule-row__meta">${esc(s.meta)}</div>
-      </div>
-      <a class="schedule-row__cta ${s.ctaType ? esc(s.ctaType) : ''}" href="${esc(s.url || '#')}">${esc(s.ctaLabel || 'Info')} →</a>
-    </div>
-  `).join('');
+  el.innerHTML = items.map(scheduleRowHTML).join('');
 }
 
 // ---------- Calendar rendering ----------
@@ -330,9 +340,13 @@ function renderScheduleCalendar(schedule, el) {
             const isToday = c.date.getTime() === today.getTime();
             const k = _dateKey(c.date);
             const evs = eventsByDate[k] || [];
-            const evHtml = evs.map(ev => `
-              <a class="schedule-cal__event${ev.ctaType === 'debut' ? ' is-debut' : ''}" href="${esc(ev.url && ev.url !== '#' ? ev.url : 'schedule.html')}"${ev.url && /^https?:\/\//.test(ev.url) ? ' target="_blank" rel="noopener noreferrer"' : ''} title="${esc(ev.title)} — ${esc(ev.meta || '')}">${esc(ev.title)}</a>
-            `).join('');
+            const evHtml = evs.map(ev => {
+              const detailHref = ev.id ? `schedule-detail.html?id=${encodeURIComponent(ev.id)}` : 'schedule.html';
+              const typeClass = ev.type ? ` schedule-cal__event--${esc((ev.type || '').toLowerCase())}` : '';
+              const debutClass = ev.ctaType === 'debut' ? ' is-debut' : '';
+              const tagPrefix = ev.region ? `[${esc(ev.region)}] ` : '';
+              return `<a class="schedule-cal__event${typeClass}${debutClass}" href="${esc(detailHref)}" title="${esc(ev.title)} — ${esc(ev.meta || '')}">${tagPrefix}${esc(ev.title)}</a>`;
+            }).join('');
             return `<div class="schedule-cal__cell${c.outside ? ' is-outside' : ''}${isToday ? ' is-today' : ''}${dow===0?' is-sun':''}${dow===6?' is-sat':''}">
               <div class="schedule-cal__date">${c.date.getDate()}</div>
               <div class="schedule-cal__events">${evHtml}</div>
@@ -381,23 +395,49 @@ function renderScheduleGrouped(schedule, el) {
     return `
       <h3 class="schedule-month">${esc(year)} / ${esc(monthName)}</h3>
       <div class="schedule-list">
-        ${byMonth[k].map(s => `
-          <div class="schedule-row">
-            <div class="schedule-row__date">
-              <span class="m">${esc(s.month)}</span>
-              <span class="d">${esc(s.day)}</span>
-              <span class="w">${esc(s.weekday)}</span>
-            </div>
-            <div>
-              <div class="schedule-row__title">${esc(s.title)}</div>
-              <div class="schedule-row__meta">${esc(s.meta)}</div>
-            </div>
-            <a class="schedule-row__cta ${s.ctaType ? esc(s.ctaType) : ''}" href="${esc(s.url || '#')}">${esc(s.ctaLabel || 'Info')} →</a>
-          </div>
-        `).join('')}
+        ${byMonth[k].map(scheduleRowHTML).join('')}
       </div>
     `;
   }).join('');
+}
+
+function renderScheduleDetail(schedule, el) {
+  if (!el) return;
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  const item = schedule.find(s => s.id === id);
+  if (!item) {
+    el.innerHTML = `
+      <div class="news-detail news-detail--notfound">
+        <p>該当する予定が見つかりませんでした。</p>
+        <a class="news-detail__back" href="schedule.html">← Schedule一覧に戻る</a>
+      </div>`;
+    document.title = '予定が見つかりません | enon Official';
+    return;
+  }
+  const monthFull = { JAN:'JANUARY',FEB:'FEBRUARY',MAR:'MARCH',APR:'APRIL',MAY:'MAY',JUN:'JUNE',JUL:'JULY',AUG:'AUGUST',SEP:'SEPTEMBER',OCT:'OCTOBER',NOV:'NOVEMBER',DEC:'DECEMBER' }[item.month] || item.month;
+  const tags = scheduleTagsHTML(item);
+  const cta = (item.url && item.url !== '#') ? `
+    <div class="schedule-detail__cta-wrap">
+      <a class="schedule-detail__cta${item.ctaType === 'debut' ? ' is-debut' : ''}" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">${esc(item.ctaLabel || 'Ticket')} →</a>
+    </div>` : '';
+  el.innerHTML = `
+    <article class="news-detail schedule-detail">
+      <a class="news-detail__back news-detail__back--top" href="schedule.html">← Schedule一覧に戻る</a>
+      <div class="schedule-detail__date">
+        <div class="schedule-detail__date-monthyear">${esc(item.year)} / ${esc(monthFull)}</div>
+        <div class="schedule-detail__date-big">${esc(item.day)} <small>(${esc(item.weekday)})</small></div>
+      </div>
+      <div class="schedule-detail__tags">${tags}</div>
+      <h1 class="news-detail__title">${esc(item.title)}</h1>
+      ${item.meta ? `<div class="schedule-detail__meta">${esc(item.meta)}</div>` : ''}
+      ${item.image ? `<div class="news-detail__image"><img src="${esc(item.image)}" alt="${esc(item.title)}" loading="eager" decoding="async"></div>` : ''}
+      ${item.body ? `<div class="news-detail__body">${formatBody(item.body)}</div>` : ''}
+      ${cta}
+      <a class="news-detail__back" href="schedule.html">← Schedule一覧に戻る</a>
+    </article>
+  `;
+  document.title = `${item.title} | enon Official`;
 }
 
 function renderGallery(gallery, el) {
@@ -510,6 +550,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Schedule page
   renderScheduleGrouped(data.schedule, document.querySelector('[data-slot="scheduleFull"]'));
+
+  // Schedule detail page
+  renderScheduleDetail(data.schedule, document.querySelector('[data-slot="scheduleDetail"]'));
 
   // After render: init scroll reveals for all dynamic items
   initReveal('.section__head, .member-card, .schedule-row, .news-item, .member-detail, .gallery-cell, .sns-link, .pagehead__inner');
