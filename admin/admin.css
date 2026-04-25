@@ -180,6 +180,36 @@ button{font:inherit;cursor:pointer}
 .a-drag-handle:hover{color:var(--a-text);border-color:var(--a-text)}
 .a-empty{padding:40px;text-align:center;color:var(--a-text-dim);border:1px dashed var(--a-line-strong);border-radius:10px}
 
+/* member SNS editor */
+.a-member-sns{
+  background:var(--a-bg);border:1px solid var(--a-line);border-radius:8px;
+  padding:14px 16px;
+}
+.a-member-sns__head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;
+}
+.a-member-sns__title{
+  font-size:11px;letter-spacing:.18em;color:var(--a-text-dim);
+  font-family:'Unbounded',sans-serif;text-transform:uppercase;
+}
+.a-sns-list{display:flex;flex-direction:column;gap:8px}
+.a-sns-row{
+  display:grid;grid-template-columns:140px 1fr auto;gap:8px;align-items:center;
+}
+.a-sns-row select,
+.a-sns-row input{
+  background:var(--a-panel);color:var(--a-text);
+  border:1px solid var(--a-line-strong);border-radius:5px;
+  padding:8px 10px;font-size:13px;font-family:inherit;
+}
+.a-sns-row select:focus,
+.a-sns-row input:focus{outline:none;border-color:var(--a-accent)}
+@media (max-width:600px){
+  .a-sns-row{grid-template-columns:1fr 1fr;}
+  .a-sns-row select{grid-column:1 / -1}
+}
+
 /* ---------- Gallery image card ---------- */
 .a-gallery-row{display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:start}
 @media (max-width:720px){.a-gallery-row{grid-template-columns:1fr}}

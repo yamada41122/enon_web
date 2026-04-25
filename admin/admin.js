@@ -26,6 +26,11 @@ const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV
 const WEEKDAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
 const CTA_TYPES = [{v:'',l:'通常'},{v:'debut',l:'Debut強調'}];
 const SCHEDULE_TYPES = ['LIVE','EVENT','MEDIA'];
+const MEMBER_SNS_TYPES = [
+  { v:'x',         l:'X (Twitter)' },
+  { v:'instagram', l:'Instagram'   },
+  { v:'tiktok',    l:'TikTok'      }
+];
 
 let state = null;  // the editable content
 
@@ -120,7 +125,29 @@ function memberCardHTML(m, i) {
       <label class="a-card__field a-card__field--wide"><span>趣味</span><input data-k="hobby" value="${esc(m.hobby||'')}"></label>
       <label class="a-card__field a-card__field--wide"><span>好きなもの</span><input data-k="likes" value="${esc(m.likes||'')}"></label>
     </div>
+    ${memberSnsEditorHTML(m, i)}
   </div>`;
+}
+
+function memberSnsEditorHTML(m, memberIdx) {
+  const sns = m.sns || [];
+  const rows = sns.map((s, sIdx) => {
+    const opts = MEMBER_SNS_TYPES.map(t => `<option value="${t.v}" ${s.type===t.v?'selected':''}>${t.l}</option>`).join('');
+    return `
+    <div class="a-sns-row" data-mem-idx="${memberIdx}" data-sns-idx="${sIdx}">
+      <select data-sns-type>${opts}</select>
+      <input type="url" data-sns-url value="${esc(s.url||'')}" placeholder="https://...">
+      <button type="button" class="a-btn a-btn--danger a-btn--sm" data-sns-remove>×</button>
+    </div>`;
+  }).join('');
+  return `
+    <div class="a-member-sns" style="margin-top:18px">
+      <div class="a-member-sns__head">
+        <span class="a-member-sns__title">SNSリンク（任意・複数可）</span>
+        <button type="button" class="a-btn a-btn--ghost a-btn--sm" data-sns-add="${memberIdx}">＋ SNS追加</button>
+      </div>
+      <div class="a-sns-list">${rows || '<div style="color:var(--a-text-dim);font-size:12px;padding:8px 0">未設定</div>'}</div>
+    </div>`;
 }
 
 // NEWS
@@ -390,6 +417,37 @@ function bindListHandlers(key) {
           setStatus('画像をクリアしました', 'ok');
         };
       }
+    }
+
+    // member-specific: SNS add/edit/remove
+    if (key === 'members') {
+      const memIdx = idx;
+      const m = state.members[memIdx];
+      if (!Array.isArray(m.sns)) m.sns = [];
+
+      // add SNS row
+      const addBtn = card.querySelector('[data-sns-add]');
+      if (addBtn) {
+        addBtn.onclick = () => {
+          m.sns.push({ type: 'x', url: '' });
+          save();
+          renderMembers();
+        };
+      }
+      // type select / url input / remove for each row
+      card.querySelectorAll('.a-sns-row').forEach(row => {
+        const sIdx = Number(row.dataset.snsIdx);
+        const typeSel = row.querySelector('[data-sns-type]');
+        const urlInp = row.querySelector('[data-sns-url]');
+        const removeBtn = row.querySelector('[data-sns-remove]');
+        if (typeSel) typeSel.onchange = () => { m.sns[sIdx].type = typeSel.value; save(); };
+        if (urlInp) urlInp.oninput = () => { m.sns[sIdx].url = urlInp.value; save(); };
+        if (removeBtn) removeBtn.onclick = () => {
+          m.sns.splice(sIdx, 1);
+          save();
+          renderMembers();
+        };
+      });
     }
 
     // schedule-specific: image upload, id sanitization

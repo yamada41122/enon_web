@@ -48,18 +48,42 @@ function renderHeroTagline(group, el) {
   el.textContent = group.tagline || '';
 }
 
+// SNS icons (inline SVG, currentColor)
+const SNS_ICONS = {
+  x: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644z"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r=".9" fill="currentColor"/></svg>',
+  tiktok: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424v-7a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z"/></svg>'
+};
+const SNS_LABEL = { x: 'X', instagram: 'Instagram', tiktok: 'TikTok' };
+
+function memberSnsHtml(sns, prefix) {
+  if (!sns || !sns.length) return '';
+  const icons = sns
+    .filter(s => s && s.url && s.url.trim() && SNS_ICONS[s.type])
+    .map(s => `
+      <a class="${prefix}__icon ${prefix}__icon--${esc(s.type)}" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(SNS_LABEL[s.type] || s.type)}" title="${esc(SNS_LABEL[s.type] || s.type)}">
+        ${SNS_ICONS[s.type]}
+      </a>`)
+    .join('');
+  if (!icons) return '';
+  return `<div class="${prefix}">${icons}</div>`;
+}
+
 function renderMemberGrid(members, el) {
   if (!el) return;
   el.innerHTML = members.map(m => `
-    <a class="member-card" href="members.html#${esc(m.id)}" style="--m-color:var(${esc(m.colorVar)})">
-      <div class="member-card__bg"></div>
-      <div class="member-card__initial">${esc(m.initial)}</div>
-      <div class="member-card__color-tag">${esc(m.colorEn)}</div>
-      <div class="member-card__info">
-        <div class="member-card__name-en">${esc(m.nameEn)}</div>
-        <div class="member-card__name-jp">${esc(m.nameJpFamily)} ${esc(m.nameJpGiven)}</div>
-      </div>
-    </a>
+    <div class="member-card-wrap">
+      <a class="member-card" href="members.html#${esc(m.id)}" style="--m-color:var(${esc(m.colorVar)})">
+        <div class="member-card__bg"></div>
+        <div class="member-card__initial">${esc(m.initial)}</div>
+        <div class="member-card__color-tag">${esc(m.colorEn)}</div>
+        <div class="member-card__info">
+          <div class="member-card__name-en">${esc(m.nameEn)}</div>
+          <div class="member-card__name-jp">${esc(m.nameJpFamily)} ${esc(m.nameJpGiven)}</div>
+        </div>
+      </a>
+      ${memberSnsHtml(m.sns, 'member-card__sns')}
+    </div>
   `).join('');
 }
 
@@ -67,9 +91,12 @@ function renderMemberDetails(members, el) {
   if (!el) return;
   el.innerHTML = members.map(m => `
     <article class="member-detail" id="${esc(m.id)}" style="--m-color:var(${esc(m.colorVar)})">
-      <div class="member-detail__visual">
-        <span class="member-detail__no">No. ${esc(m.no)} / ${esc(m.colorEn)}</span>
-        <span class="initial">${esc(m.initial)}</span>
+      <div class="member-detail__visual-wrap">
+        <div class="member-detail__visual">
+          <span class="member-detail__no">No. ${esc(m.no)} / ${esc(m.colorEn)}</span>
+          <span class="initial">${esc(m.initial)}</span>
+        </div>
+        ${memberSnsHtml(m.sns, 'member-detail__sns')}
       </div>
       <div class="member-detail__body">
         <div class="en-name">${esc(m.nameEn)}</div>
