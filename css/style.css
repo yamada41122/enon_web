@@ -99,8 +99,7 @@ body::after{
 .site-header .logo img,
 .site-header .logo svg{
   height:100%;width:auto;object-fit:contain;
-  filter:invert(1);
-  opacity:.88;
+  opacity:.92;
   transition:opacity .8s, transform 1.2s cubic-bezier(.25,.8,.25,1);
 }
 .site-header .logo:hover img{opacity:1;transform:scale(1.04)}
@@ -184,13 +183,13 @@ body::after{
   display:block;margin:0 auto;
   width:clamp(320px,50vw,680px);
   height:auto;max-width:88vw;
-  filter:invert(1);opacity:.88;
+  opacity:.92;
   animation: heroIn 2.2s cubic-bezier(.2,.7,.2,1) both,
              heroFloat 9s ease-in-out 2.4s infinite;
 }
 @keyframes heroIn{
   from{opacity:0;transform:translateY(8px) scale(.985)}
-  to  {opacity:.88;transform:none}
+  to  {opacity:.92;transform:none}
 }
 @keyframes heroFloat{
   0%,100%{transform:translateY(0)}
@@ -707,7 +706,7 @@ body::after{
 }
 .site-footer__logo{
   height:clamp(60px,7vw,88px);width:auto;object-fit:contain;
-  filter:invert(1);opacity:.85;flex:0 0 auto;
+  opacity:.85;flex:0 0 auto;
   transition:transform 1.6s cubic-bezier(.25,.8,.25,1), opacity .8s;
 }
 .site-footer__logo:hover{transform:rotate(2deg) scale(1.04);opacity:1}

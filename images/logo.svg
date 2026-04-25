@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet">
   <style>
-    .logo-letter { fill: #ffffff; }
-    .logo-dot { fill: #000000; }
+    .logo-letter { fill: #3F3833; }
+    .logo-dot { fill: #F7F7F5; }
   </style>
   <g>
     <!-- e -->
