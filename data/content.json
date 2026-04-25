@@ -25,7 +25,13 @@
       "position": "Vocal / Dance",
       "birth": "6月4日",
       "hobby": "ダンス、歌、ギター弾き語り、永遠に寝ること、シール帳づくり",
-      "likes": "いちご、お寿司、お肉、なまけもの、パンダ、しろねこ"
+      "likes": "いちご、お寿司、お肉、なまけもの、パンダ、しろねこ",
+      "sns": [
+        {
+          "type": "x",
+          "url": "https://x.com/honoka_enon"
+        }
+      ]
     },
     {
       "id": "yuna",
@@ -43,7 +49,13 @@
       "position": "Vocal / Dance",
       "birth": "10月21日",
       "hobby": "笑顔を絶やさないこと、アイプリカード集め、香水集め",
-      "likes": "辛いもの、抹茶スイーツ、ゴマフアザラシ、まめゴマ"
+      "likes": "辛いもの、抹茶スイーツ、ゴマフアザラシ、まめゴマ",
+      "sns": [
+        {
+          "type": "x",
+          "url": "https://x.com/yuna_enon"
+        }
+      ]
     },
     {
       "id": "rin",
@@ -61,7 +73,13 @@
       "position": "Vocal / Dance",
       "birth": "7月20日",
       "hobby": "人のMBTIを当てること、オーラの色を見ること、めじるしアクセサリー・シール集め",
-      "likes": "チョコ、アリクイ、ツインテール、厚底の靴"
+      "likes": "チョコ、アリクイ、ツインテール、厚底の靴",
+      "sns": [
+        {
+          "type": "x",
+          "url": "https://x.com/rin_enon"
+        }
+      ]
     },
     {
       "id": "fuwari",
@@ -79,7 +97,13 @@
       "position": "Vocal / Dance",
       "birth": "3月14日",
       "hobby": "寝ること、ガチャガチャ集め、ゲーム",
-      "likes": "マカロン、わたあめ、白くま、ねこ、水色の小物"
+      "likes": "マカロン、わたあめ、白くま、ねこ、水色の小物",
+      "sns": [
+        {
+          "type": "x",
+          "url": "https://x.com/fuwari_enon"
+        }
+      ]
     },
     {
       "id": "mori",
@@ -97,7 +121,13 @@
       "position": "Vocal / Dance",
       "birth": "1月12日",
       "hobby": "アクセサリー作り、ヴィンテージ服集め",
-      "likes": "ラーメン、子犬、手紙"
+      "likes": "ラーメン、子犬、手紙",
+      "sns": [
+        {
+          "type": "x",
+          "url": "https://x.com/mori_enon"
+        }
+      ]
     }
   ],
   "news": [
