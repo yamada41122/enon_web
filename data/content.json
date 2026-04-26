@@ -234,7 +234,8 @@
   ],
   "sns": [
     {
-      "label": "× / Twitter",
+      "type": "x",
+      "label": "X (Twitter)",
       "url": "https://x.com/enon_idol"
     }
   ]

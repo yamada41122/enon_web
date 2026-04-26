@@ -325,18 +325,26 @@ function renderSns() {
 }
 
 function snsCardHTML(s,i) {
+  const typeOpts = [
+    { v:'',          l:'(タイプ指定なし)' },
+    { v:'x',         l:'X (Twitter)'      },
+    { v:'instagram', l:'Instagram'        },
+    { v:'tiktok',    l:'TikTok'           }
+  ].map(t => `<option value="${t.v}" ${s.type===t.v?'selected':''}>${t.l}</option>`).join('');
+  const typeBadge = s.type ? `<span class="a-card__badge ${esc(s.type)}">${esc((s.type||'').toUpperCase())}</span> ` : '';
   return `
   <div class="a-card" data-index="${i}">
     <div class="a-card__head">
-      <div class="a-card__label">${esc(s.label||'')} → ${esc(s.url||'')}</div>
+      <div class="a-card__label">${typeBadge}${esc(s.label||'')} → ${esc(s.url||'')}</div>
       <div class="a-card__actions">
         <button class="a-btn a-btn--ghost a-btn--sm" data-action="up">▲</button>
         <button class="a-btn a-btn--ghost a-btn--sm" data-action="down">▼</button>
         <button class="a-btn a-btn--danger a-btn--sm" data-action="del">削除</button>
       </div>
     </div>
-    <div class="a-card__grid">
-      <label class="a-card__field"><span>ラベル</span><input data-k="label" value="${esc(s.label||'')}"></label>
+    <div class="a-card__grid a-card__grid--3">
+      <label class="a-card__field"><span>SNSタイプ（アイコン表示用）</span><select data-k="type">${typeOpts}</select></label>
+      <label class="a-card__field"><span>ラベル（任意・補助テキスト）</span><input data-k="label" value="${esc(s.label||'')}"></label>
       <label class="a-card__field"><span>URL</span><input data-k="url" value="${esc(s.url||'#')}"></label>
     </div>
   </div>`;
@@ -696,7 +704,7 @@ function newGallery() {
   const color = GALLERY_COLORS.find(c => !used.includes(c)) || 'c1';
   return { label:'NEW / LABEL', color };
 }
-function newSns() { return { label:'★ / SNS', url:'#' }; }
+function newSns() { return { type:'x', label:'X (Twitter)', url:'#' }; }
 
 function bindAddButtons() {
   document.getElementById('addMemberBtn').onclick = () => { state.members.push(newMember()); renumberMembers(); save(); renderMembers(); scrollToLast('membersList'); };
