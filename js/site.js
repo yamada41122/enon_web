@@ -87,6 +87,51 @@ function renderMemberGrid(members, el) {
   `).join('');
 }
 
+function renderGroupSection(group, el) {
+  if (!el) return;
+  const hasConcept = group && (group.conceptLine1 || group.conceptLine2);
+  if (!hasConcept) {
+    el.innerHTML = '';
+    el.style.display = 'none';
+    return;
+  }
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="group-section__inner">
+      <div class="group-section__kicker">${esc(group.tagline || '')}</div>
+      <h2 class="group-section__name">${esc(group.name || '')}<span class="group-section__reading">${group.reading ? '— ' + esc(group.reading) : ''}</span></h2>
+      <div class="group-section__concept">
+        ${group.conceptLine1 ? `<p>${group.conceptLine1}</p>` : ''}
+        ${group.conceptLine2 ? `<p>${esc(group.conceptLine2)}</p>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderArtistFilter(data, filterEl, groupEl, memberEl) {
+  if (!filterEl) return;
+  const hasGroup = !!(data.group && (data.group.conceptLine1 || data.group.conceptLine2));
+  const hasMember = data.members && data.members.length > 0;
+  if (!hasGroup && !hasMember) {
+    filterEl.innerHTML = '';
+    return;
+  }
+  const chips = ['<button class="filter-chip active" data-artist-filter="all">All</button>'];
+  if (hasGroup)  chips.push('<button class="filter-chip" data-artist-filter="group">Group</button>');
+  if (hasMember) chips.push('<button class="filter-chip" data-artist-filter="member">Member</button>');
+  filterEl.innerHTML = `<div class="filter-row" style="margin-bottom:32px">${chips.join('')}</div>`;
+
+  filterEl.querySelectorAll('.filter-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      filterEl.querySelectorAll('.filter-chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      const f = c.dataset.artistFilter;
+      if (groupEl)  groupEl.style.display  = (f === 'all' || f === 'group')  ? '' : 'none';
+      if (memberEl) memberEl.style.display = (f === 'all' || f === 'member') ? '' : 'none';
+    });
+  });
+}
+
 function renderMemberDetails(members, el) {
   if (!el) return;
   el.innerHTML = members.map(m => `
@@ -486,7 +531,15 @@ function renderSns(sns, el) {
     const url = s.url || '#';
     const external = /^https?:\/\//.test(url);
     const attrs = external ? ' target="_blank" rel="noopener noreferrer"' : '';
-    return `<a class="sns-link" href="${esc(url)}"${attrs}>${esc(s.label)}</a>`;
+    // if type is set and recognized, render icon + label; otherwise fallback to label-only
+    if (s.type && SNS_ICONS[s.type]) {
+      const label = s.label || SNS_LABEL[s.type] || s.type;
+      return `<a class="sns-link sns-link--icon" href="${esc(url)}"${attrs} aria-label="${esc(label)}">
+        <span class="sns-link__icon">${SNS_ICONS[s.type]}</span>
+        <span class="sns-link__label">${esc(label)}</span>
+      </a>`;
+    }
+    return `<a class="sns-link" href="${esc(url)}"${attrs}>${esc(s.label || url)}</a>`;
   }).join('');
 }
 
@@ -567,6 +620,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Members page
   renderMemberDetails(data.members, document.querySelector('[data-slot="memberDetails"]'));
+  // Members page: group section + filter chips (Group / Member)
+  const _groupSlot = document.querySelector('[data-slot="groupSection"]');
+  const _memberSlot = document.querySelector('[data-slot="memberDetails"]');
+  const _filterSlot = document.querySelector('[data-slot="artistFilter"]');
+  renderGroupSection(data.group, _groupSlot);
+  renderArtistFilter(data, _filterSlot, _groupSlot, _memberSlot);
 
   // News page
   renderNewsList(data.news, document.querySelector('[data-slot="newsFull"]'));
