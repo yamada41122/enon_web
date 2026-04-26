@@ -207,8 +207,12 @@ function newsCardHTML(n,i) {
       </div>
     </div>
     <label class="a-card__field" style="margin-top:14px">
-      <span>本文（改行あり、段落は空行で区切る / Google Maps・YouTube等の &lt;iframe&gt; 埋め込みコード貼り付け可）</span>
+      <span>本文 (JP / 改行あり、段落は空行で区切る / iframe埋め込み可)</span>
       <textarea data-k="body" rows="8" style="min-height:180px">${esc(n.body||'')}</textarea>
+    </label>
+    <label class="a-card__field" style="margin-top:10px">
+      <span>Body (EN)</span>
+      <textarea data-k="body_en" rows="8" style="min-height:180px">${esc(n.body_en||'')}</textarea>
     </label>
   </div>`;
 }
@@ -243,7 +247,8 @@ function scheduleCardHTML(s,i) {
     </div>
     <div class="a-card__grid a-card__grid--4">
       <label class="a-card__field"><span>ID (詳細URL)</span><input data-k="id" data-schedule-id-input value="${esc(s.id||'')}" title="任意の英数字に変更できます"></label>
-      <label class="a-card__field"><span>地域</span><input data-k="region" value="${esc(s.region||'')}" placeholder="東京・大阪 など"></label>
+      <label class="a-card__field"><span>地域 (JP)</span><input data-k="region" value="${esc(s.region||'')}" placeholder="東京・大阪 など"></label>
+      <label class="a-card__field"><span>Region (EN)</span><input data-k="region_en" value="${esc(s.region_en||'')}" placeholder="Tokyo, Osaka, ..."></label>
       <label class="a-card__field"><span>種類</span><select data-k="type">${typeOpts}</select></label>
       <label class="a-card__field"><span>年</span><input data-k="year" value="${esc(s.year||'')}"></label>
       <label class="a-card__field"><span>月</span><select data-k="month">${monOpts}</select></label>
