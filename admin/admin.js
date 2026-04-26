@@ -120,10 +120,14 @@ function memberCardHTML(m, i) {
       <label class="a-card__field"><span>ふりがな</span><input data-k="reading" value="${esc(m.reading||'')}"></label>
       <label class="a-card__field"><span>ポジション</span><input data-k="position" value="${esc(m.position||'')}"></label>
       <label class="a-card__field"><span>誕生日</span><input data-k="birth" value="${esc(m.birth||'')}"></label>
-      <label class="a-card__field a-card__field--wide"><span>キャッチコピー</span><input data-k="catch" value="${esc(m.catch||'')}"></label>
-      <label class="a-card__field a-card__field--wide"><span>自己紹介文</span><textarea data-k="bio">${esc(m.bio||'')}</textarea></label>
-      <label class="a-card__field a-card__field--wide"><span>趣味</span><input data-k="hobby" value="${esc(m.hobby||'')}"></label>
-      <label class="a-card__field a-card__field--wide"><span>好きなもの</span><input data-k="likes" value="${esc(m.likes||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>キャッチコピー (JP)</span><input data-k="catch" value="${esc(m.catch||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>Catch (EN)</span><input data-k="catch_en" value="${esc(m.catch_en||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>自己紹介文 (JP)</span><textarea data-k="bio">${esc(m.bio||'')}</textarea></label>
+      <label class="a-card__field a-card__field--wide"><span>Bio (EN)</span><textarea data-k="bio_en">${esc(m.bio_en||'')}</textarea></label>
+      <label class="a-card__field a-card__field--wide"><span>趣味 (JP)</span><input data-k="hobby" value="${esc(m.hobby||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>Hobby (EN)</span><input data-k="hobby_en" value="${esc(m.hobby_en||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>好きなもの (JP)</span><input data-k="likes" value="${esc(m.likes||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>Likes (EN)</span><input data-k="likes_en" value="${esc(m.likes_en||'')}"></label>
     </div>
     ${memberSnsEditorHTML(m, i)}
   </div>`;
@@ -183,7 +187,8 @@ function newsCardHTML(n,i) {
       <label class="a-card__field"><span>ID (詳細URLに使用 / 半角英数・ハイフン)</span><input data-k="id" data-news-id-input value="${esc(n.id||'')}" title="任意の英数字に変更できます。変更すると既存のシェアリンクが無効になります"></label>
       <label class="a-card__field"><span>日付 (YYYY.MM.DD)</span><input data-k="date" value="${esc(n.date||'')}"></label>
       <label class="a-card__field"><span>カテゴリ</span><select data-k="category">${catOpts}</select></label>
-      <label class="a-card__field a-card__field--wide"><span>タイトル</span><input data-k="title" value="${esc(n.title||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>タイトル (JP)</span><input data-k="title" value="${esc(n.title||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>Title (EN)</span><input data-k="title_en" value="${esc(n.title_en||'')}"></label>
     </div>
     <div class="a-gallery-row" style="margin-top:14px">
       <div class="a-gallery-preview${hasImage ? '' : ' a-gallery-preview--empty'}">
@@ -245,8 +250,10 @@ function scheduleCardHTML(s,i) {
       <label class="a-card__field"><span>日</span><input data-k="day" value="${esc(s.day||'')}" maxlength="2"></label>
       <label class="a-card__field"><span>曜日</span><select data-k="weekday">${wOpts}</select></label>
       <label class="a-card__field"><span>ボタン種別</span><select data-k="ctaType">${ctaOpts}</select></label>
-      <label class="a-card__field a-card__field--wide"><span>タイトル</span><input data-k="title" value="${esc(s.title||'')}"></label>
-      <label class="a-card__field a-card__field--wide"><span>会場・補足情報（一覧に表示）</span><input data-k="meta" value="${esc(s.meta||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>タイトル (JP)</span><input data-k="title" value="${esc(s.title||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>Title (EN)</span><input data-k="title_en" value="${esc(s.title_en||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>会場・補足情報 (JP)</span><input data-k="meta" value="${esc(s.meta||'')}"></label>
+      <label class="a-card__field a-card__field--wide"><span>Meta (EN)</span><input data-k="meta_en" value="${esc(s.meta_en||'')}"></label>
       <label class="a-card__field"><span>ボタンラベル</span><input data-k="ctaLabel" value="${esc(s.ctaLabel||'Info')}"></label>
       <label class="a-card__field a-card__field--wide"><span>リンクURL（チケット販売など）</span><input data-k="url" value="${esc(s.url||'#')}"></label>
     </div>
@@ -267,8 +274,12 @@ function scheduleCardHTML(s,i) {
       </div>
     </div>
     <label class="a-card__field" style="margin-top:14px">
-      <span>本文（改行あり、段落は空行で区切る / Google Maps・YouTube等の &lt;iframe&gt; 埋め込みコード貼り付け可）</span>
+      <span>本文 (JP / iframe埋め込み可)</span>
       <textarea data-k="body" rows="8" style="min-height:180px">${esc(s.body||'')}</textarea>
+    </label>
+    <label class="a-card__field" style="margin-top:10px">
+      <span>Body (EN)</span>
+      <textarea data-k="body_en" rows="8" style="min-height:180px">${esc(s.body_en||'')}</textarea>
     </label>
   </div>`;
 }

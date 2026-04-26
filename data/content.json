@@ -2,9 +2,13 @@
   "group": {
     "name": "enon",
     "reading": "エンオン",
+    "reading_en": "enon",
     "tagline": "— 5 girls / debut 2026.04.29 —",
+    "tagline_en": "— 5 girls / debut 2026.04.29 —",
     "conceptLine1": "音<span class=\"mark\">On</span>で繋がるご縁<span class=\"mark\">En</span>をたいせつに。",
+    "conceptLine1_en": "Treasuring the bonds — <span class=\"mark\">En</span> — woven through music — <span class=\"mark\">On</span>.",
     "conceptLine2": "enon — エンオン。",
+    "conceptLine2_en": "enon.",
     "copyright": "© 2026 enon. All Rights Reserved.",
     "debutLine": "Debut : 2026.04.29 @ Shibuya Garret"
   },
