@@ -217,6 +217,27 @@ body::after{
   animation: heroIn 2.2s cubic-bezier(.2,.7,.2,1) both,
              heroFloat 9s ease-in-out 2.4s infinite;
 }
+
+/* hero with featured photo */
+.hero--photo{padding-top:clamp(140px,18vh,200px)}
+.hero__photo{
+  display:block;width:min(94vw, 1280px);
+  margin:0 auto;
+  border-radius:4px;overflow:hidden;
+  background:var(--bg-warm);
+  position:relative;z-index:1;
+  animation: heroIn 2.2s cubic-bezier(.2,.7,.2,1) both;
+}
+.hero__photo img{
+  width:100%;height:auto;display:block;
+  /* soft fade towards the cream page background on edges */
+  -webkit-mask-image: radial-gradient(ellipse 110% 100% at 50% 50%, #000 70%, transparent 100%);
+          mask-image: radial-gradient(ellipse 110% 100% at 50% 50%, #000 70%, transparent 100%);
+}
+@media (max-width:600px){
+  .hero__photo{width:96vw;border-radius:2px}
+  .hero--photo{padding-top:clamp(120px,16vh,160px)}
+}
 @keyframes heroIn{
   from{opacity:0;transform:translateY(8px) scale(.985)}
   to  {opacity:.92;transform:none}

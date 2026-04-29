@@ -34,8 +34,14 @@
 </header>
 
 <!-- HERO -->
-<section class="hero">
-  <img class="hero__logo" src="images/logo.png" alt="enon logo" width="2000" height="2000" fetchpriority="high" decoding="async">
+<section class="hero hero--photo">
+  <picture class="hero__photo">
+    <source media="(max-width:480px)"  srcset="images/hero-480.jpg">
+    <source media="(max-width:768px)"  srcset="images/hero-768.jpg">
+    <source media="(max-width:1024px)" srcset="images/hero-1024.jpg">
+    <source media="(max-width:1600px)" srcset="images/hero-1600.jpg">
+    <img src="images/hero.jpg" alt="enon" width="2400" height="1599" fetchpriority="high" decoding="async">
+  </picture>
   <p class="hero__tagline" data-slot="tagline">— 5 girls / debut 2026.04.29 —</p>
   <p class="hero__concept" data-slot="concept">
     <span class="mark">On</span>音楽を通じて、出会った<span class="mark">En</span>縁を大事にする。<br>
