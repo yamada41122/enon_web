@@ -95,6 +95,8 @@ function renderMembers() {
 
 function memberCardHTML(m, i) {
   const colorOpts = COLOR_OPTIONS.map(c => `<option value="${c.var}" ${m.colorVar===c.var?'selected':''}>${c.en} / ${c.jp}</option>`).join('');
+  const hasImage = !!m.image;
+  const previewSrc = hasImage ? `../${esc(m.image)}` : '';
   return `
   <div class="a-card" data-index="${i}">
     <div class="a-card__head">
@@ -103,6 +105,22 @@ function memberCardHTML(m, i) {
         <button class="a-btn a-btn--ghost a-btn--sm" data-action="up">▲</button>
         <button class="a-btn a-btn--ghost a-btn--sm" data-action="down">▼</button>
         <button class="a-btn a-btn--danger a-btn--sm" data-action="del">削除</button>
+      </div>
+    </div>
+    <div class="a-gallery-row" style="margin-bottom:14px">
+      <div class="a-gallery-preview${hasImage ? '' : ' a-gallery-preview--empty'}">
+        ${hasImage ? `<img src="${previewSrc}" alt="" onerror="this.style.display='none';this.parentElement.classList.add('a-gallery-preview--err');this.parentElement.dataset.err='画像が見つかりません'">` : '<span>画像なし</span>'}
+      </div>
+      <div class="a-gallery-fields">
+        <label class="a-card__field"><span>画像パス（直接編集可）</span><input data-k="image" value="${esc(m.image||'')}" placeholder="images/members/photo.jpg"></label>
+        <div class="a-card__field">
+          <span>メンバー写真をアップロード（推奨: 縦長 4:5・正方形・人物が中央）</span>
+          <div class="a-upload">
+            <input type="file" accept="image/*" id="member-upload-${i}" data-member-upload-idx="${i}">
+            <label for="member-upload-${i}" class="a-btn a-btn--ghost a-btn--sm">📁 ファイルを選ぶ</label>
+            ${hasImage ? `<button type="button" class="a-btn a-btn--danger a-btn--sm" data-member-clear-image="${i}">画像をクリア</button>` : ''}
+          </div>
+        </div>
       </div>
     </div>
     <div class="a-card__grid a-card__grid--3">
@@ -443,11 +461,49 @@ function bindListHandlers(key) {
       }
     }
 
-    // member-specific: SNS add/edit/remove
+    // member-specific: image upload + SNS add/edit/remove
     if (key === 'members') {
       const memIdx = idx;
       const m = state.members[memIdx];
       if (!Array.isArray(m.sns)) m.sns = [];
+
+      // image upload
+      const upInput = card.querySelector('[data-member-upload-idx]');
+      if (upInput) {
+        upInput.onchange = async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          if (!file.type.startsWith('image/')) {
+            setStatus('画像ファイルを選んでください', 'err');
+            return;
+          }
+          if (file.size > 5 * 1024 * 1024) {
+            setStatus('ファイルが大きすぎます（5MB以下にしてください）', 'err');
+            return;
+          }
+          try {
+            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB)...`, '');
+            const path = await uploadImageToGitHub(file, 'members');
+            state.members[memIdx].image = path;
+            save();
+            renderMembers();
+            setStatus(`✓ 画像アップロード成功: ${path}`, 'ok');
+          } catch (err) {
+            setStatus('アップロード失敗: ' + err.message, 'err');
+          }
+          e.target.value = '';
+        };
+      }
+      const clearBtn = card.querySelector('[data-member-clear-image]');
+      if (clearBtn) {
+        clearBtn.onclick = () => {
+          if (!confirm('画像の関連付けをクリアしますか？（GitHub上のファイルは残ります）')) return;
+          state.members[memIdx].image = '';
+          save();
+          renderMembers();
+          setStatus('画像をクリアしました', 'ok');
+        };
+      }
 
       // add SNS row
       const addBtn = card.querySelector('[data-sns-add]');

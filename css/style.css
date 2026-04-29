@@ -431,6 +431,22 @@ body::after{
   transition:opacity 1s;
 }
 .member-card:hover .member-card__initial{opacity:.55}
+
+/* member card with photo */
+.member-card__image{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;
+  transition:transform 1.2s cubic-bezier(.2,.8,.2,1), filter .8s;
+  z-index:1;
+}
+.member-card.has-image .member-card__bg{opacity:.06}
+.member-card.has-image .member-card__info{
+  /* place name over a soft gradient so it stays readable */
+  background:linear-gradient(to top, rgba(255,255,255,.92) 0%, rgba(255,255,255,.7) 50%, transparent 100%);
+  padding:38px 18px 18px;
+  left:0;right:0;bottom:0;
+}
+.member-card.has-image:hover .member-card__image{transform:scale(1.04)}
 .member-card__info{
   position:absolute;left:18px;right:18px;bottom:18px;z-index:2;
 }
@@ -546,6 +562,15 @@ body::after{
   font-family:var(--serif-en);font-style:italic;font-weight:300;
   font-size:clamp(140px,20vw,260px);
   color:var(--m-color, var(--accent-2));opacity:.36;line-height:1;
+}
+.member-detail__visual.has-image::before{display:none}
+.member-detail__image{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;z-index:1;
+}
+.member-detail__visual.has-image .member-detail__no{
+  z-index:2;color:#fff;
+  text-shadow:0 1px 8px rgba(0,0,0,.4);
 }
 .member-detail__no{
   position:absolute;top:24px;left:24px;

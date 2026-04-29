@@ -252,11 +252,14 @@ function renderMemberGrid(members, el) {
     const secondary = (CURRENT_LOCALE === 'en')
       ? `${esc(m.nameJpFamily||'')} ${esc(m.nameJpGiven||'')}`.trim()
       : esc(m.nameEn || '');
+    const visual = m.image
+      ? `<img class="member-card__image" src="${esc(m.image)}" alt="${esc(m.nameEn||m.nameJpFamily||'')}" loading="lazy" decoding="async">`
+      : `<div class="member-card__initial">${esc(m.initial)}</div>`;
     return `
     <div class="member-card-wrap">
-      <a class="member-card" href="members.html#${esc(m.id)}" style="--m-color:var(${esc(m.colorVar)})">
+      <a class="member-card${m.image ? ' has-image' : ''}" href="members.html#${esc(m.id)}" style="--m-color:var(${esc(m.colorVar)})">
         <div class="member-card__bg"></div>
-        <div class="member-card__initial">${esc(m.initial)}</div>
+        ${visual}
         <div class="member-card__color-tag">${esc(m.colorEn)}</div>
         <div class="member-card__info">
           <div class="member-card__name-en">${secondary}</div>
@@ -321,12 +324,15 @@ function renderMemberDetails(members, el) {
     const primaryName = isEn ? esc(m.nameEn||'') : `${esc(m.nameJpFamily||'')}<span> ${esc(m.nameJpGiven||'')}</span>`;
     const subName = isEn ? `${esc(m.nameJpFamily||'')} ${esc(m.nameJpGiven||'')}` : esc(m.nameEn||'');
     const colorLabel = isEn ? esc(m.colorEn||'') : esc(loc(m,'colorJp')||'');
+    const visualInner = m.image
+      ? `<img class="member-detail__image" src="${esc(m.image)}" alt="${esc(m.nameEn||m.nameJpFamily||'')}" loading="lazy" decoding="async">`
+      : `<span class="initial">${esc(m.initial)}</span>`;
     return `
     <article class="member-detail" id="${esc(m.id)}" style="--m-color:var(${esc(m.colorVar)})">
       <div class="member-detail__visual-wrap">
-        <div class="member-detail__visual">
+        <div class="member-detail__visual${m.image ? ' has-image' : ''}">
           <span class="member-detail__no">${esc(t('mlabel.no'))} ${esc(m.no)} / ${esc(m.colorEn)}</span>
-          <span class="initial">${esc(m.initial)}</span>
+          ${visualInner}
         </div>
         ${memberSnsHtml(m.sns, 'member-detail__sns')}
       </div>
