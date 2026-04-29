@@ -91,14 +91,17 @@ body::before{
 
 /* ---------- BUTTONS ---------- */
 .a-btn{
+  display:inline-flex;align-items:center;gap:6px;
   border:1px solid var(--a-line-strong);
   background:rgba(255,255,255,.6);color:var(--a-text);
   padding:10px 20px;border-radius:999px;
   font-family:var(--serif-en);font-style:italic;font-weight:400;
   font-size:12px;letter-spacing:.18em;
+  text-decoration:none;line-height:1;
   transition:all .5s cubic-bezier(.25,.8,.25,1);
   white-space:nowrap;
 }
+.a-btn:hover{opacity:1}
 .a-btn:hover{
   border-color:var(--a-accent-2);background:var(--a-accent-soft);
   color:var(--a-text);
