@@ -43,7 +43,8 @@
       "catch_en": "An idol who brings you strength and courage when you need it most—always by your side, gently close to your heart.",
       "bio_en": "Soft and dreamy on the outside, strong-willed on the inside. A little lazy—until it’s time to shine. With strengths in dance, vocals, and acoustic guitar, she takes pride in her performance. Her motto: ‘We’re going BIG with this team.’ Gemini, O blood type.",
       "hobby_en": "Dance, vocals, acoustic guitar, sleeping forever, and collecting sticker albums.",
-      "likes_en": "Strawberries, sushi, meat, sloths, pandas, and white kitties."
+      "likes_en": "Strawberries, sushi, meat, sloths, pandas, and white kitties.",
+      "image": ""
     },
     {
       "id": "yuna",
@@ -71,7 +72,8 @@
       "catch_en": "“Not just anyone’s favorite—I want to be yours.”",
       "bio_en": "Positive, stubborn to the core, and fiercely competitive. Once supported by her own idol through hard times, she now dreams of being the one who can lift others up. Her charm lies in her expressive looks and genuine smile that connect with every single person. Libra.",
       "hobby_en": "Always smiling, collecting Aipuri cards, and collecting perfumes.",
-      "likes_en": "picy food, matcha desserts, spotted seals, and Mamegoma."
+      "likes_en": "picy food, matcha desserts, spotted seals, and Mamegoma.",
+      "image": ""
     },
     {
       "id": "rin",
@@ -99,7 +101,8 @@
       "catch_en": "“Let’s keep being reborn, over and over—with Rin.”",
       "bio_en": "An INFP, an eternal chuunibyo, and deeply sensitive. She has admired idols since she was a child. Her special talents include sensing bad premonitions, guessing people’s MBTI types, and seeing the colors of their auras. Keep an eye on how she brings her twin-tails and pannier to life in her performances. She aims to become the kind of idol you’ll remember at the very end of your life. Cancer, blood type O.",
       "hobby_en": "Guessing people’s MBTI types, reading aura colors, and collecting charm accessories and stickers.",
-      "likes_en": "Chocolate, anteaters, twin-tails, and chunky platform shoes."
+      "likes_en": "Chocolate, anteaters, twin-tails, and chunky platform shoes.",
+      "image": ""
     },
     {
       "id": "fuwari",
@@ -127,7 +130,8 @@
       "catch_en": "“Spreading soft, fluffy healing vibes to everyone!!”",
       "bio_en": "Soft, calm, and moving at her own pace. She hopes to gently stay by your side and make you smile. With careful attention to every movement and expression, she dreams of becoming an idol who can softly touch hearts. A hidden gamer at heart. Pisces, O blood type.",
       "hobby_en": "Sleeping, collecting capsule toys, and gaming.",
-      "likes_en": "Sleeping, collecting gacha toys, and playing games."
+      "likes_en": "Sleeping, collecting gacha toys, and playing games.",
+      "image": ""
     },
     {
       "id": "mori",
@@ -155,7 +159,32 @@
       "catch_en": "“I may be a late starter, but my passion burns brighter than anyone else’s.”",
       "bio_en": "From Korea. She joined enon to share a special kind of healing that only idols can offer. Talented in making accessories, she gently watches over fans as they smile during performances. Still a work in progress, but with a strong determination to come back even better each time. Capricorn, B blood type.",
       "hobby_en": "Making accessories and collecting vintage clothing.",
-      "likes_en": "Ramen, puppies, and writing letters."
+      "likes_en": "Ramen, puppies, and writing letters.",
+      "image": ""
+    },
+    {
+      "id": "new_1777464259170",
+      "no": "06",
+      "initial": "?",
+      "colorVar": "--c-fuwari",
+      "colorEn": "SKYBLUE",
+      "colorJp": "水色",
+      "nameEn": "New Member",
+      "nameJpFamily": "姓",
+      "nameJpGiven": "名",
+      "reading": "ふりがな",
+      "catch": "キャッチコピー",
+      "bio": "自己紹介文を入力",
+      "position": "Vocal",
+      "birth": "1月1日",
+      "hobby": "",
+      "likes": "",
+      "sns": [],
+      "image": "",
+      "catch_en": "",
+      "bio_en": "",
+      "hobby_en": "",
+      "likes_en": ""
     }
   ],
   "news": [
@@ -224,6 +253,26 @@
       "meta_en": "SHIBUYA Garret / OPEN 11:30 / START 12:00 / ADV ¥500+1D",
       "body_en": "■Debut Live\n~first light~\n\n■Performer\nenon\n\n■Date\nWednesday, April 29, 2026 (Public Holiday)\n\n■Organizer / Registrant\nPetunia\n\n■Venue\nGARRET udagawa (Tokyo)\n\n■Map\n\n<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3241.6285785759796!2d139.69854759999998!3d35.6615216!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ca9042e31f5%3A0xd2b118828bfd1972!2sGARRET%20udagawa!5e0!3m2!1sja!2sjp!4v1777080370273!5m2!1sja!2sjp\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>\n\n■Ticket URL\nhttps://tiget.net/events/481155\n\nTickets\n○S Ticket\n¥8,000\n・Priority entry to the front row\n・Group photo or cheki with all members\n・T-shirt\n・Front area access\n\n○A Ticket\n¥500\n\n■Entry Order\nNumbered tickets / SP Ticket ⇒ A Ticket ⇒ Same-day tickets\n\n【Inquiries】\nFor inquiries after purchasing a ticket, please include your ticket number.\n\n【For All Attendees】\n・Cancellations by customers are not accepted.\n・Please line up with appropriate spacing during entry and for the meet-and-greet session.\n・Please manage your belongings, including valuables, at your own responsibility. The artists, their management, the venue, and the organizer will not be held responsible for any loss or theft.\n・Smoking is strictly prohibited inside the venue.",
       "region_en": ""
+    },
+    {
+      "id": "event-1777533569514-krzu",
+      "year": "2026",
+      "month": "MAY",
+      "day": "05",
+      "weekday": "TUE",
+      "region": "秋葉原",
+      "type": "LIVE",
+      "title": "ｱｲﾄﾞﾙﾉﾐｶﾀ無銭RUN",
+      "meta": "Cosmic Lab",
+      "ctaType": "",
+      "ctaLabel": "Info",
+      "url": "#",
+      "image": "",
+      "body": "予約¥0+2D(¥1,400) ※当日+¥500",
+      "region_en": "Akihabara",
+      "meta_en": "Cosmic Lab",
+      "title_en": "Idol no mikata",
+      "body_en": "ADV ¥0+2D(¥1,400) ※door+¥500"
     }
   ],
   "gallery": [
