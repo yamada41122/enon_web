@@ -161,30 +161,6 @@
       "hobby_en": "Making accessories and collecting vintage clothing.",
       "likes_en": "Ramen, puppies, and writing letters.",
       "image": ""
-    },
-    {
-      "id": "new_1777464259170",
-      "no": "06",
-      "initial": "?",
-      "colorVar": "--c-fuwari",
-      "colorEn": "SKYBLUE",
-      "colorJp": "水色",
-      "nameEn": "New Member",
-      "nameJpFamily": "姓",
-      "nameJpGiven": "名",
-      "reading": "ふりがな",
-      "catch": "キャッチコピー",
-      "bio": "自己紹介文を入力",
-      "position": "Vocal",
-      "birth": "1月1日",
-      "hobby": "",
-      "likes": "",
-      "sns": [],
-      "image": "",
-      "catch_en": "",
-      "bio_en": "",
-      "hobby_en": "",
-      "likes_en": ""
     }
   ],
   "news": [
