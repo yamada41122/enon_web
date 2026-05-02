@@ -231,6 +231,7 @@
       "region_en": ""
     },
     {
+<<<<<<< Updated upstream
       "id": "event-1777533569514-krzu",
       "year": "2026",
       "month": "MAY",
@@ -249,6 +250,26 @@
       "meta_en": "Cosmic Lab",
       "title_en": "Idol no mikata",
       "body_en": "ADV ¥0+2D(¥1,400) ※door+¥500"
+=======
+      "id": "event-20260504-gpfmini27",
+      "year": "2026",
+      "month": "MAY",
+      "day": "04",
+      "weekday": "MON",
+      "type": "LIVE",
+      "region": "新宿",
+      "region_en": "Shinjuku",
+      "title": "『Girl's Pop Festival mini vol.27』",
+      "title_en": "Girl's Pop Festival mini vol.27",
+      "meta": "TwinBoxGARAGE / 開場 12:10 / 開演 12:30 / 通常¥0(2D) 前方¥2,000(1D) 当日+¥500",
+      "meta_en": "TwinBoxGARAGE / Doors 12:10 / Show 12:30 / GA ¥0 (+2D) / Front ¥2,000 (+1D) / Door +¥500",
+      "ctaType": "",
+      "ctaLabel": "Ticket",
+      "url": "https://t-dv.com/gpfmini_27",
+      "image": "",
+      "body": "■ライブ情報\n2026年5月4日(月祝)\n\n■会場\nTwinBoxGARAGE\n\n■公演名\n『Girl's Pop Festival mini vol.27』\n\n■料金\n通常 ¥0 (2ドリンク代別途)\n前方 ¥2,000 (1ドリンク代別途)\n当日 +¥500\n\n■チケット販売\n販売期間: 5/1 22:00 〜 5/4 23:59\nhttps://t-dv.com/gpfmini_27\n\n■開場 / 開演\n開場 12:10 / 開演 12:30\n\n■出演者\nSUGAR☆VEGA.com / 青春のフロンティア / リベルナント / 指田りさ / 朝凪 / Misty Syrena / 横浜宝石娘 / first crush / てんしろっ！/ antares / Cheer Magic / エピック・エピローグ 第3番 / DECIDER / キミリセット / めろでぃProject / ConnectCall / enon",
+      "body_en": "■ Live Info\nMonday, May 4, 2026 (Public Holiday)\n\n■ Venue\nTwinBoxGARAGE\n\n■ Event\nGirl's Pop Festival mini vol.27\n\n■ Fee\nGeneral ¥0 (+2 drinks)\nFront ¥2,000 (+1 drink)\nDoor +¥500\n\n■ Ticket Sales\nPeriod: May 1, 22:00 ~ May 4, 23:59\nhttps://t-dv.com/gpfmini_27\n\n■ Times\nDoors 12:10 / Show 12:30\n\n■ Lineup\nSUGAR☆VEGA.com / Seishun no Frontier / Liberunant / Risa Sashida / Asanagi / Misty Syrena / Yokohama Houseki Musume / first crush / Tenshirott! / antares / Cheer Magic / Epic Epilogue No.3 / DECIDER / Kimi Reset / Melody Project / ConnectCall / enon"
+>>>>>>> Stashed changes
     }
   ],
   "gallery": [
