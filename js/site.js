@@ -574,20 +574,19 @@ function _dateKey(d) {
 function renderScheduleCalendar(schedule, el) {
   if (!el) return;
 
-  // 本日以降のみ表示
-  const upcoming = filterUpcomingSchedule(schedule);
+  // カレンダーは過去イベントも含めて全件表示
   const eventsByDate = {};
-  upcoming.forEach(s => {
+  schedule.forEach(s => {
     const d = _eventDate(s);
     if (!d) return;
     const k = _dateKey(d);
     (eventsByDate[k] = eventsByDate[k] || []).push(s);
   });
 
-  // determine starting view: nearest upcoming event, fallback to today
+  // determine starting view: nearest upcoming event, fallback to first event, fallback to today
   const today = new Date(); today.setHours(0,0,0,0);
-  const allDates = upcoming.map(_eventDate).filter(Boolean).sort((a,b) => a - b);
-  const startFrom = allDates[0] || today;
+  const allDates = schedule.map(_eventDate).filter(Boolean).sort((a,b) => a - b);
+  const startFrom = allDates.find(d => d >= today) || allDates[0] || today;
   let viewYear = startFrom.getFullYear();
   let viewMonth = startFrom.getMonth();
 
