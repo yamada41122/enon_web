@@ -428,23 +428,32 @@ function bindListHandlers(key) {
         upInput.onchange = async (e) => {
           const file = e.target.files[0];
           if (!file) return;
-          if (!file.type.startsWith('image/')) {
-            setStatus('画像ファイルを選んでください', 'err');
+          if (!file.type || !file.type.startsWith('image/')) {
+            setStatus(`画像ファイルを選んでください（検出形式: ${file.type || '不明'} / ${file.name}）`, 'err');
+            return;
+          }
+          if (isUnsupportedImageFormat(file)) {
+            setStatus(`この画像形式はサイト上で表示できません。JPEG/PNGに変換してください（iPhoneは「設定→カメラ→フォーマット→互換性優先」）。`, 'err');
             return;
           }
           if (file.size > 5 * 1024 * 1024) {
-            setStatus('ファイルが大きすぎます（5MB以下にしてください）', 'err');
+            setStatus(`ファイルが大きすぎます（${(file.size/1024/1024).toFixed(1)}MB）。5MB以下に圧縮してください。`, 'err');
+            return;
+          }
+          if (file.size === 0) {
+            setStatus('ファイルが空です。別のファイルを選んでください。', 'err');
             return;
           }
           try {
-            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB)...`, '');
+            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB / ${file.type})...`, '');
             const path = await uploadImageToGitHub(file, 'gallery');
             state.gallery[idx].image = path;
             save();
             renderGallery();
             setStatus(`✓ 画像アップロード成功: ${path}`, 'ok');
           } catch (err) {
-            setStatus('アップロード失敗: ' + err.message, 'err');
+            console.error('Gallery image upload error:', err);
+            setStatus(`アップロード失敗 [${file.name}]: ${err.message}`, 'err');
           }
           e.target.value = '';
         };
@@ -473,23 +482,34 @@ function bindListHandlers(key) {
         upInput.onchange = async (e) => {
           const file = e.target.files[0];
           if (!file) return;
-          if (!file.type.startsWith('image/')) {
-            setStatus('画像ファイルを選んでください', 'err');
+          // 画像でなければ拒否（type 空のときも警告を出す）
+          if (!file.type || !file.type.startsWith('image/')) {
+            setStatus(`画像ファイルを選んでください（検出形式: ${file.type || '不明'} / ${file.name}）`, 'err');
+            return;
+          }
+          // HEIC/HEIF/AVIF はブラウザで表示できないので拒否
+          if (isUnsupportedImageFormat(file)) {
+            setStatus(`この画像形式（${file.type || file.name.split('.').pop()}）はサイト上で表示できません。iPhoneで撮影した場合は「設定→カメラ→フォーマット→互換性優先」にしてから再撮影、または写真アプリで「JPEGとして書き出し」してください。`, 'err');
             return;
           }
           if (file.size > 5 * 1024 * 1024) {
-            setStatus('ファイルが大きすぎます（5MB以下にしてください）', 'err');
+            setStatus(`ファイルが大きすぎます（${(file.size/1024/1024).toFixed(1)}MB）。5MB以下に圧縮してください。`, 'err');
+            return;
+          }
+          if (file.size === 0) {
+            setStatus('ファイルが空です。別のファイルを選んでください。', 'err');
             return;
           }
           try {
-            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB)...`, '');
+            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB / ${file.type})...`, '');
             const path = await uploadImageToGitHub(file, 'members');
             state.members[memIdx].image = path;
             save();
             renderMembers();
             setStatus(`✓ 画像アップロード成功: ${path}`, 'ok');
           } catch (err) {
-            setStatus('アップロード失敗: ' + err.message, 'err');
+            console.error('Member image upload error:', err);
+            setStatus(`アップロード失敗 [${file.name}]: ${err.message}`, 'err');
           }
           e.target.value = '';
         };
@@ -556,23 +576,32 @@ function bindListHandlers(key) {
         upInput.onchange = async (e) => {
           const file = e.target.files[0];
           if (!file) return;
-          if (!file.type.startsWith('image/')) {
-            setStatus('画像ファイルを選んでください', 'err');
+          if (!file.type || !file.type.startsWith('image/')) {
+            setStatus(`画像ファイルを選んでください（検出形式: ${file.type || '不明'} / ${file.name}）`, 'err');
+            return;
+          }
+          if (isUnsupportedImageFormat(file)) {
+            setStatus(`この画像形式はサイト上で表示できません。JPEG/PNGに変換してください。`, 'err');
             return;
           }
           if (file.size > 5 * 1024 * 1024) {
-            setStatus('ファイルが大きすぎます（5MB以下にしてください）', 'err');
+            setStatus(`ファイルが大きすぎます（${(file.size/1024/1024).toFixed(1)}MB）。5MB以下に圧縮してください。`, 'err');
+            return;
+          }
+          if (file.size === 0) {
+            setStatus('ファイルが空です。別のファイルを選んでください。', 'err');
             return;
           }
           try {
-            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB)...`, '');
+            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB / ${file.type})...`, '');
             const path = await uploadImageToGitHub(file, 'schedule');
             state.schedule[idx].image = path;
             save();
             renderSchedule();
             setStatus(`✓ 画像アップロード成功: ${path}`, 'ok');
           } catch (err) {
-            setStatus('アップロード失敗: ' + err.message, 'err');
+            console.error('Schedule image upload error:', err);
+            setStatus(`アップロード失敗 [${file.name}]: ${err.message}`, 'err');
           }
           e.target.value = '';
         };
@@ -624,23 +653,32 @@ function bindListHandlers(key) {
         upInput.onchange = async (e) => {
           const file = e.target.files[0];
           if (!file) return;
-          if (!file.type.startsWith('image/')) {
-            setStatus('画像ファイルを選んでください', 'err');
+          if (!file.type || !file.type.startsWith('image/')) {
+            setStatus(`画像ファイルを選んでください（検出形式: ${file.type || '不明'} / ${file.name}）`, 'err');
+            return;
+          }
+          if (isUnsupportedImageFormat(file)) {
+            setStatus(`この画像形式はサイト上で表示できません。JPEG/PNGに変換してください。`, 'err');
             return;
           }
           if (file.size > 5 * 1024 * 1024) {
-            setStatus('ファイルが大きすぎます（5MB以下にしてください）', 'err');
+            setStatus(`ファイルが大きすぎます（${(file.size/1024/1024).toFixed(1)}MB）。5MB以下に圧縮してください。`, 'err');
+            return;
+          }
+          if (file.size === 0) {
+            setStatus('ファイルが空です。別のファイルを選んでください。', 'err');
             return;
           }
           try {
-            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB)...`, '');
+            setStatus(`画像をアップロード中: ${file.name} (${(file.size/1024).toFixed(0)} KB / ${file.type})...`, '');
             const path = await uploadImageToGitHub(file, 'news');
             state.news[idx].image = path;
             save();
             renderNews();
             setStatus(`✓ 画像アップロード成功: ${path}`, 'ok');
           } catch (err) {
-            setStatus('アップロード失敗: ' + err.message, 'err');
+            console.error('News image upload error:', err);
+            setStatus(`アップロード失敗 [${file.name}]: ${err.message}`, 'err');
           }
           e.target.value = '';
         };
@@ -673,9 +711,20 @@ function fileToBase64(file) {
   });
 }
 function sanitizeFilename(name) {
-  const ext = (name.match(/\.[a-zA-Z0-9]+$/) || [''])[0].toLowerCase();
-  const base = name.replace(ext, '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40) || 'image';
+  // 拡張子を大文字小文字を問わず末尾から取得し、ベース部分を確実に切り出す
+  const m = name.match(/^(.*?)(\.[a-zA-Z0-9]+)?$/);
+  const rawBase = (m && m[1]) || name;
+  const ext = ((m && m[2]) || '').toLowerCase();
+  const base = rawBase.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40) || 'image';
   return base + ext;
+}
+// HEIC/HEIF/AVIF など、ブラウザで表示できない可能性が高い形式を判定
+function isUnsupportedImageFormat(file) {
+  const type = (file.type || '').toLowerCase();
+  const name = (file.name || '').toLowerCase();
+  if (type.includes('heic') || type.includes('heif') || type.includes('avif')) return true;
+  if (/\.(heic|heif|avif)$/i.test(name)) return true;
+  return false;
 }
 async function uploadImageToGitHub(file, folder = 'gallery') {
   const s = loadSettings();
