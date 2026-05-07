@@ -623,6 +623,17 @@ body::after{
   box-shadow:0 14px 32px -16px rgba(63,53,47,.10);
 }
 .schedule-row__body{min-width:0}
+.schedule-empty{
+  padding:48px 24px;
+  text-align:center;
+  font-family:var(--serif-jp);
+  color:var(--text-dim);
+  font-size:14px;
+  letter-spacing:.08em;
+  border:1px dashed var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.4);
+}
 .schedule-row__date{font-family:var(--serif-en);font-style:italic;line-height:1}
 .schedule-row__date .m{
   font-size:11px;letter-spacing:.3em;color:var(--text-dim);

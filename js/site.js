@@ -523,12 +523,6 @@ function scheduleRowHTML(s) {
   </a>`;
 }
 
-function renderScheduleList(schedule, el, limit) {
-  if (!el) return;
-  const items = limit ? schedule.slice(0, limit) : schedule;
-  el.innerHTML = items.map(scheduleRowHTML).join('');
-}
-
 // ---------- Calendar rendering ----------
 const _MONTH_TO_NUM = { JAN:0, FEB:1, MAR:2, APR:3, MAY:4, JUN:5, JUL:6, AUG:7, SEP:8, OCT:9, NOV:10, DEC:11 };
 
@@ -541,6 +535,38 @@ function _eventDate(s) {
   return new Date(y, m, d);
 }
 
+// 本日(00:00)以降のイベントのみ抽出。日付不明のものは除外。
+function filterUpcomingSchedule(schedule) {
+  if (!Array.isArray(schedule)) return [];
+  const today = new Date(); today.setHours(0,0,0,0);
+  return schedule.filter(s => {
+    const d = _eventDate(s);
+    return d && d >= today;
+  });
+}
+
+// 本日以降のものを日付昇順で並べ替え
+function sortScheduleAsc(schedule) {
+  return [...schedule].sort((a, b) => {
+    const da = _eventDate(a), db = _eventDate(b);
+    if (!da && !db) return 0;
+    if (!da) return 1;
+    if (!db) return -1;
+    return da - db;
+  });
+}
+
+function renderScheduleList(schedule, el, limit) {
+  if (!el) return;
+  const upcoming = sortScheduleAsc(filterUpcomingSchedule(schedule));
+  if (!upcoming.length) {
+    el.innerHTML = `<div class="schedule-empty">${esc(CURRENT_LOCALE === 'en' ? 'No upcoming shows yet. Stay tuned.' : '近日開催の予定はまだありません。お楽しみに。')}</div>`;
+    return;
+  }
+  const items = limit ? upcoming.slice(0, limit) : upcoming;
+  el.innerHTML = items.map(scheduleRowHTML).join('');
+}
+
 function _dateKey(d) {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
@@ -548,18 +574,20 @@ function _dateKey(d) {
 function renderScheduleCalendar(schedule, el) {
   if (!el) return;
 
+  // 本日以降のみ表示
+  const upcoming = filterUpcomingSchedule(schedule);
   const eventsByDate = {};
-  schedule.forEach(s => {
+  upcoming.forEach(s => {
     const d = _eventDate(s);
     if (!d) return;
     const k = _dateKey(d);
     (eventsByDate[k] = eventsByDate[k] || []).push(s);
   });
 
-  // determine starting view: nearest upcoming event, fallback to first event, fallback to today
+  // determine starting view: nearest upcoming event, fallback to today
   const today = new Date(); today.setHours(0,0,0,0);
-  const allDates = schedule.map(_eventDate).filter(Boolean).sort((a,b) => a - b);
-  const startFrom = allDates.find(d => d >= today) || allDates[0] || today;
+  const allDates = upcoming.map(_eventDate).filter(Boolean).sort((a,b) => a - b);
+  const startFrom = allDates[0] || today;
   let viewYear = startFrom.getFullYear();
   let viewMonth = startFrom.getMonth();
 
@@ -654,8 +682,13 @@ function renderScheduleCalendar(schedule, el) {
 
 function renderScheduleGrouped(schedule, el) {
   if (!el) return;
+  const upcoming = sortScheduleAsc(filterUpcomingSchedule(schedule));
+  if (!upcoming.length) {
+    el.innerHTML = `<div class="schedule-empty">${esc(CURRENT_LOCALE === 'en' ? 'No upcoming shows yet. Stay tuned.' : '近日開催の予定はまだありません。お楽しみに。')}</div>`;
+    return;
+  }
   const byMonth = {};
-  schedule.forEach(s => {
+  upcoming.forEach(s => {
     const key = `${s.year} / ${s.month}`;
     (byMonth[key] = byMonth[key] || []).push(s);
   });
