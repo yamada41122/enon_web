@@ -583,10 +583,9 @@ function renderScheduleCalendar(schedule, el) {
     (eventsByDate[k] = eventsByDate[k] || []).push(s);
   });
 
-  // determine starting view: nearest upcoming event, fallback to first event, fallback to today
+  // 初期表示は常に「今日の月」（例: 5/13なら5月を表示）
   const today = new Date(); today.setHours(0,0,0,0);
-  const allDates = schedule.map(_eventDate).filter(Boolean).sort((a,b) => a - b);
-  const startFrom = allDates.find(d => d >= today) || allDates[0] || today;
+  const startFrom = today;
   let viewYear = startFrom.getFullYear();
   let viewMonth = startFrom.getMonth();
 
