@@ -236,9 +236,38 @@ function newsCardHTML(n,i) {
 }
 
 // SCHEDULE
+// 日付計算用ヘルパー
+const _SCHED_MON_TO_NUM = { JAN:0, FEB:1, MAR:2, APR:3, MAY:4, JUN:5, JUL:6, AUG:7, SEP:8, OCT:9, NOV:10, DEC:11 };
+function _schedDate(s) {
+  const m = _SCHED_MON_TO_NUM[(s.month || '').toUpperCase()];
+  if (m === undefined) return null;
+  const y = parseInt(s.year, 10);
+  const d = parseInt(s.day, 10);
+  if (!y || !d) return null;
+  return new Date(y, m, d);
+}
+function isSchedulePast(s) {
+  const d = _schedDate(s);
+  if (!d) return false;
+  const today = new Date(); today.setHours(0,0,0,0);
+  return d < today;
+}
+// 開催日の新しい順（未来 → 過去）に並べる
+function sortScheduleByDateDesc() {
+  if (!state.schedule) return;
+  state.schedule.sort((a, b) => {
+    const da = _schedDate(a), db = _schedDate(b);
+    if (!da && !db) return 0;
+    if (!da) return 1;   // 日付不明は末尾
+    if (!db) return -1;
+    return db - da;       // 新しい順
+  });
+}
+
 function renderSchedule() {
   const list = document.getElementById('scheduleList');
   if (!state.schedule?.length) { list.innerHTML = '<div class="a-empty">スケジュール未登録</div>'; return; }
+  sortScheduleByDateDesc();
   list.innerHTML = state.schedule.map((s,i) => scheduleCardHTML(s,i)).join('');
   bindListHandlers('schedule');
 }
@@ -250,16 +279,16 @@ function scheduleCardHTML(s,i) {
   const typeOpts = SCHEDULE_TYPES.map(t => `<option ${s.type===t?'selected':''}>${t}</option>`).join('');
   const hasImage = !!s.image;
   const previewSrc = hasImage ? `../${esc(s.image)}` : '';
+  const past = isSchedulePast(s);
   return `
-  <div class="a-card" data-index="${i}">
+  <div class="a-card${past ? ' a-card--past' : ''}" data-index="${i}">
     <div class="a-card__head">
       <div class="a-card__label">
+        ${past ? '<span class="a-card__badge a-card__badge--past">終了</span>' : ''}
         ${s.type ? `<span class="a-card__badge ${esc((s.type||'').toLowerCase())}">${esc(s.type)}</span>` : ''}
         ${s.region ? `[${esc(s.region)}] ` : ''}${esc(s.year||'')}/${esc(s.month||'')}.${esc(s.day||'')} - ${esc((s.title||'').slice(0,40))}
       </div>
       <div class="a-card__actions">
-        <button class="a-btn a-btn--ghost a-btn--sm" data-action="up">▲</button>
-        <button class="a-btn a-btn--ghost a-btn--sm" data-action="down">▼</button>
         <button class="a-btn a-btn--danger a-btn--sm" data-action="del">削除</button>
       </div>
     </div>
@@ -550,8 +579,21 @@ function bindListHandlers(key) {
       });
     }
 
-    // schedule-specific: image upload, id sanitization
+    // schedule-specific: image upload, id sanitization, date-based reorder
     if (key === 'schedule') {
+      // re-sort on year/month/day change (blur)
+      ['year','month','day'].forEach(fieldName => {
+        const inp = card.querySelector(`[data-k="${fieldName}"]`);
+        if (!inp) return;
+        const handler = () => {
+          sortScheduleByDateDesc();
+          save();
+          renderSchedule();
+          setStatus('日付に応じて並び順を更新しました（新しい順）', 'ok');
+        };
+        inp.addEventListener('blur', handler);
+        if (inp.tagName === 'SELECT') inp.addEventListener('change', handler);
+      });
       // sanitize ID on blur
       const idInput = card.querySelector('[data-schedule-id-input]');
       if (idInput) {
@@ -800,9 +842,15 @@ function ensureNewsIds() {
 }
 function newSchedule() {
   const ts = Date.now();
+  const now = new Date();
+  const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const WD  = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
   return {
     id: `event-${ts}-${Math.random().toString(36).slice(2,6)}`,
-    year:'2026', month:'APR', day:'01', weekday:'MON',
+    year: String(now.getFullYear()),
+    month: MON[now.getMonth()],
+    day: String(now.getDate()).padStart(2,'0'),
+    weekday: WD[now.getDay()],
     region: '東京', type: 'LIVE',
     title:'新しい予定', meta:'会場名 / 時間',
     ctaType:'', ctaLabel:'Info', url:'#',
@@ -835,7 +883,16 @@ function bindAddButtons() {
     save();
     renderNews();
   };
-  document.getElementById('addScheduleBtn').onclick = () => { state.schedule.push(newSchedule()); save(); renderSchedule(); scrollToLast('scheduleList'); };
+  document.getElementById('addScheduleBtn').onclick = () => {
+    const item = newSchedule();
+    state.schedule.push(item);
+    sortScheduleByDateDesc();
+    save();
+    renderSchedule();
+    // 新しく追加したカードまでスクロール（IDで特定）
+    const newCard = document.querySelector(`#scheduleList .a-card [data-schedule-id-input][value="${item.id}"]`)?.closest('.a-card');
+    if (newCard) newCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
   document.getElementById('addGalleryBtn').onclick = () => { state.gallery.push(newGallery()); save(); renderGallery(); scrollToLast('galleryList'); };
   document.getElementById('addSnsBtn').onclick = () => { state.sns.push(newSns()); save(); renderSns(); scrollToLast('snsList'); };
 }
@@ -981,8 +1038,9 @@ async function publishToGitHub() {
 
   // Sync DOM form values into state as a safety net (in case a field didn't fire input)
   syncDomToState();
-  // ensure news is sorted by date descending before publish
+  // ensure news/schedule are sorted by date descending before publish
   sortNewsByDateDesc();
+  sortScheduleByDateDesc();
   save();
 
   setStatus('GitHubに公開中...', '');
@@ -1185,10 +1243,11 @@ async function bootAdmin() {
     }
   }
 
-  // normalize: ensure news/schedule entries have IDs and sort news by date desc
+  // normalize: ensure news/schedule entries have IDs and sort news/schedule by date desc
   ensureNewsIds();
   ensureScheduleIds();
   sortNewsByDateDesc();
+  sortScheduleByDateDesc();
   save();
 
   renderAll();

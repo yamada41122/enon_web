@@ -226,6 +226,21 @@ body::before{
 .a-card__badge.info{color:#7B98AC}
 .a-card__badge.media{color:#7DA86B}
 .a-card__badge.goods{color:#B5A56B}
+.a-card__badge.event{color:#B5A56B}
+.a-card__badge--past{
+  color:#9A8E89;background:rgba(154,142,137,.08);
+  border-color:#C5B8B0;font-style:normal;font-family:var(--serif);
+  letter-spacing:.12em;
+}
+.a-card--past{
+  opacity:.62;
+  background:repeating-linear-gradient(
+    135deg,
+    rgba(154,142,137,0.02) 0 12px,
+    rgba(154,142,137,0.05) 12px 24px
+  ), #fff;
+}
+.a-card--past:hover{opacity:.85;transition:opacity .25s ease}
 .a-card__actions{display:flex;gap:6px}
 
 .a-card__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
