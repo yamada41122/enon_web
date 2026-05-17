@@ -291,6 +291,26 @@
       "body_en": "■ Live Info\nSaturday, May 9, 2026\n\n■ Venue\nKanda CLUB F#\n\n■ Event\nKANDA MUSIC Vol.16\n\n■ Times\nDoors 11:00 / Show 11:20\n\n■ Fee\nADV ¥2,500 / Door ¥3,000 (+1 drink)\n\n■ Lineup\nenon / Cho Neko Party / TBA / etc\n\n■ Ticket\nhttps://tiget.net/events/487764"
     },
     {
+      "id": "event-20260524-shibuya",
+      "year": "2026",
+      "month": "MAY",
+      "day": "24",
+      "weekday": "SUN",
+      "region": "渋谷",
+      "region_en": "Shibuya",
+      "type": "LIVE",
+      "title": "渋谷ライブ出演",
+      "title_en": "Shibuya Live",
+      "meta": "渋谷 / OPEN 11:00 / START 11:15 / 前売 ¥2,000 / 当日 ¥3,000",
+      "meta_en": "Shibuya / Doors 11:00 / Show 11:15 / ADV ¥2,000 / Door ¥3,000",
+      "ctaType": "",
+      "ctaLabel": "Info",
+      "url": "#",
+      "image": "",
+      "body": "■日時\n2026年5月24日(日)\n\n■会場\n渋谷\n\n■タイムテーブル\nOPEN 11:00 / START 11:15\n\n■料金\n前売 ¥2,000 / 当日 ¥3,000\n\n■詳細\n詳細は決定次第更新します。",
+      "body_en": "■ Date\nSunday, May 24, 2026\n\n■ Venue\nShibuya\n\n■ Timetable\nDoors 11:00 / Show 11:15\n\n■ Fee\nADV ¥2,000 / Door ¥3,000\n\n■ Details\nMore info coming soon."
+    },
+    {
       "id": "event-20260530-kouseitoyrium-toybox",
       "year": "2026",
       "month": "MAY",
