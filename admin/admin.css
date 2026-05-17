@@ -233,15 +233,37 @@ body::before{
   letter-spacing:.12em;
 }
 .a-card--past{
-  opacity:.62;
+  opacity:.72;
   background:repeating-linear-gradient(
     135deg,
     rgba(154,142,137,0.02) 0 12px,
     rgba(154,142,137,0.05) 12px 24px
   ), #fff;
 }
-.a-card--past:hover{opacity:.85;transition:opacity .25s ease}
-.a-card__actions{display:flex;gap:6px}
+.a-card--past:hover{opacity:1;transition:opacity .25s ease}
+/* 過去イベント: ヘッダークリックで折りたたみ */
+.a-card--past .a-card__head[data-toggle-collapse]{
+  cursor:pointer;
+  user-select:none;
+  border-radius:10px;
+  transition:background .2s ease;
+}
+.a-card--past .a-card__head[data-toggle-collapse]:hover{
+  background:rgba(154,142,137,.06);
+}
+.a-card__chevron{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;
+  color:var(--a-text-dim);
+  font-size:14px;
+  transition:transform .25s ease;
+  margin-right:2px;
+}
+.a-card--collapsed .a-card__chevron{transform:rotate(-90deg)}
+.a-card__body{overflow:hidden}
+.a-card--collapsed .a-card__body{display:none}
+.a-card--collapsed{padding-bottom:14px}
+.a-card__actions{display:flex;gap:6px;align-items:center}
 
 .a-card__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .a-card__grid--3{grid-template-columns:repeat(3,1fr)}

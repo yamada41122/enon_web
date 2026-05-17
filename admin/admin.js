@@ -280,18 +280,22 @@ function scheduleCardHTML(s,i) {
   const hasImage = !!s.image;
   const previewSrc = hasImage ? `../${esc(s.image)}` : '';
   const past = isSchedulePast(s);
+  // 過去イベントはデフォルトで折りたたみ
+  const collapsed = past;
   return `
-  <div class="a-card${past ? ' a-card--past' : ''}" data-index="${i}">
-    <div class="a-card__head">
+  <div class="a-card${past ? ' a-card--past' : ''}${collapsed ? ' a-card--collapsed' : ''}" data-index="${i}">
+    <div class="a-card__head"${past ? ' data-toggle-collapse role="button" tabindex="0" title="クリックで詳細を開閉"' : ''}>
       <div class="a-card__label">
         ${past ? '<span class="a-card__badge a-card__badge--past">終了</span>' : ''}
         ${s.type ? `<span class="a-card__badge ${esc((s.type||'').toLowerCase())}">${esc(s.type)}</span>` : ''}
         ${s.region ? `[${esc(s.region)}] ` : ''}${esc(s.year||'')}/${esc(s.month||'')}.${esc(s.day||'')} - ${esc((s.title||'').slice(0,40))}
       </div>
       <div class="a-card__actions">
+        ${past ? '<span class="a-card__chevron" aria-hidden="true">▾</span>' : ''}
         <button class="a-btn a-btn--danger a-btn--sm" data-action="del">削除</button>
       </div>
     </div>
+    <div class="a-card__body">
     <div class="a-card__grid a-card__grid--4">
       <label class="a-card__field"><span>ID (詳細URL)</span><input data-k="id" data-schedule-id-input value="${esc(s.id||'')}" title="任意の英数字に変更できます"></label>
       <label class="a-card__field"><span>地域 (JP)</span><input data-k="region" value="${esc(s.region||'')}" placeholder="東京・大阪 など"></label>
@@ -333,6 +337,7 @@ function scheduleCardHTML(s,i) {
       <span>Body (EN)</span>
       <textarea data-k="body_en" rows="8" style="min-height:180px">${esc(s.body_en||'')}</textarea>
     </label>
+    </div>
   </div>`;
 }
 
@@ -581,6 +586,22 @@ function bindListHandlers(key) {
 
     // schedule-specific: image upload, id sanitization, date-based reorder
     if (key === 'schedule') {
+      // 過去イベント: ヘッダークリックで折りたたみトグル
+      const collapseHead = card.querySelector('[data-toggle-collapse]');
+      if (collapseHead) {
+        const toggle = (ev) => {
+          // 削除ボタン・チップ内ボタン等のクリックでは折りたたみしない
+          if (ev.target.closest('button, a, input, select, textarea, label, [data-action]')) return;
+          card.classList.toggle('a-card--collapsed');
+        };
+        collapseHead.addEventListener('click', toggle);
+        collapseHead.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            card.classList.toggle('a-card--collapsed');
+          }
+        });
+      }
       // re-sort on year/month/day change (blur)
       ['year','month','day'].forEach(fieldName => {
         const inp = card.querySelector(`[data-k="${fieldName}"]`);
